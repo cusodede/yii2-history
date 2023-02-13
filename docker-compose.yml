@@ -5,7 +5,7 @@ services:
         container_name: yii2_history_postgres
         image: postgres:13.6
         ports:
-            - "5432:5439"
+            - "5439:5432"
         environment:
             PGDATA: /var/lib/postgresql/data/pgdata
             POSTGRES_DB: yii2-history-tests
