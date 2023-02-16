@@ -51,7 +51,6 @@ class HistoryBehavior extends Behavior {
 
 	/**
 	 * {@inheritDoc}
-	 * todo: disable switch
 	 */
 	public function events():array {
 		return [
