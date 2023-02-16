@@ -3,14 +3,13 @@ declare(strict_types = 1);
 
 namespace app\models;
 
+use cusodede\history\behaviors\HistoryBehavior;
 use pozitronik\helpers\Utils;
 use yii\db\ActiveRecord;
 use yii\db\Exception;
 use yii\web\IdentityInterface;
 
 /**
- * This is the model class for table "sys_users".
- *
  * @property int $id
  * @property string $username Отображаемое имя пользователя
  * @property string $login Логин
@@ -18,6 +17,17 @@ use yii\web\IdentityInterface;
  * @property-read string $authKey @see [[yii\web\IdentityInterface::getAuthKey()]]
  */
 class Users extends ActiveRecord implements IdentityInterface {
+
+	/**
+	 * @inheritDoc
+	 */
+	public function behaviors():array {
+		return [
+			'history' => [
+				'class' => HistoryBehavior::class
+			]
+		];
+	}
 
 	/**
 	 * {@inheritdoc}
