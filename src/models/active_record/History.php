@@ -6,6 +6,8 @@ namespace cusodede\history\models\active_record;
 use cusodede\history\HistoryModule;
 use pozitronik\helpers\ArrayHelper;
 use pozitronik\helpers\ModuleHelper;
+use Throwable;
+use yii\base\InvalidConfigException;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
@@ -24,8 +26,8 @@ use yii\web\IdentityInterface;
  * @property string|null $operation_identifier Уникальный идентификатор (обычно клиентский csrf), связывающий несколько последовательных изменений, происходящих в одном событии
  * @property int|null $delegate Опционально: идентификатор "перекрывающего" пользователя, если поддерживается приложением
  *
- * @property IdentityInterface $relatedUser Пользователь, который вызвал изменение
- * @property IdentityInterface $relatedUserDelegated Пользователь, который вызвал изменение за другого (авторизовался под user)
+ * @property null|IdentityInterface $relatedUser Пользователь, который вызвал изменение
+ * @property null|IdentityInterface $relatedUserDelegated Пользователь, который вызвал изменение за другого (авторизовался под user)
  */
 class History extends ActiveRecord {
 	/**
@@ -68,15 +70,19 @@ class History extends ActiveRecord {
 
 	/**
 	 * @return ActiveQuery
+	 * @throws Throwable
+	 * @throws InvalidConfigException
 	 */
 	public function getRelatedUser():ActiveQuery {
-		return $this->hasOne(Users::class, ['id' => 'user']);
+		return $this->hasOne(HistoryModule::UserIdentityClass(), ['id' => 'user']);
 	}
 
 	/**
 	 * @return ActiveQuery
+	 * @throws InvalidConfigException
+	 * @throws Throwable
 	 */
 	public function getRelatedUserDelegated():ActiveQuery {
-		return $this->hasOne(Users::class, ['id' => 'delegate']);
+		return $this->hasOne(HistoryModule::UserIdentityClass(), ['id' => 'delegate']);
 	}
 }
