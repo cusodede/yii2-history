@@ -13,20 +13,20 @@ use yii\helpers\ArrayHelper;
 
 /**
  * @property ActiveRecord $owner The owner of this behavior
- * @property array|null $isRelation Конфигурация связи в реляционных атрибутах. Позволяет указать, что это изменение нужно сохранять как изменение атрибута другой модели. Формат:
+ * @property array|null $isRelation Relation config in relational attributes. Allow to specify that change as other model attribute change:
  *    [
- *        Model::class,//имя базовой модели, атрибуты которой хранятся в этой таблице/модели
- *        'modelKeyAttributeName',//имя атрибута модели, по которому производится связь со с базовой моделью
- *        'relationAttributeName',//имя атрибута модели, хранящего значение
- *        'modelRelatedAttributeName'//имя атрибута базовой модели, значение которого хранится в этой модели (опционально, если не задано, используется имя текущего класса)
+ *        Model::class,// Name of the base model, which attributes are stored in that table/model,
+ *        'modelKeyAttributeName', // Name of the attribute, which has relation to the base model,
+ *        'relationAttributeName',// Name of the attribute with a value
+ *        'modelRelatedAttributeName'// Name of the base model attribute, which value is stored in a current model (optional, name of a current class used by default)
  *    ]
- * @property callable $afterUpdate Функция для полного переопределения работы метода
+ * @property callable $afterUpdate The function for full method overloading
  */
 class HistoryBehavior extends Behavior {
 
 	public array $relations = [];
 	public ?array $isRelation = null;
-	public mixed $afterUpdate = null;//php 8.0 не умеет типизировать callable
+	public mixed $afterUpdate = null;//php 8.0 has no callable type
 
 	/**
 	 *
