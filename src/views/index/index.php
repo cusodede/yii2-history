@@ -46,12 +46,6 @@ use pozitronik\helpers\Utils;
 				'items' => $model->relatedUser,
 				'subItem' => 'id',
 				'useBadges' => false,
-				'urlScheme' => [
-					UsersController::to(//todo: replace
-						'index',
-						['UsersSearch[id]' => $model->relatedUser->id??null]
-					)
-				]
 			])
 		],
 		[
@@ -113,12 +107,6 @@ use pozitronik\helpers\Utils;
 				'items' => $model->relatedUserDelegated,
 				'subItem' => 'id',
 				'useBadges' => false,
-				'urlScheme' => [
-					UsersController::to(
-						'index',
-						['UsersSearch[id]' => $model->relatedUserDelegated->id??null]
-					)
-				]
 			])
 		]
 	]
