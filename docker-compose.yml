@@ -2,6 +2,7 @@ version: '3.7'
 
 services:
     postgres:
+        hostname: yii2_history_postgres
         container_name: yii2_history_postgres
         image: postgres:13.6
         ports:
@@ -32,6 +33,7 @@ services:
                     memory: 4G
 
     php-8:
+        hostname: yii2_history_php
         container_name: yii2_history_php
         build: ./docker/
         volumes:
