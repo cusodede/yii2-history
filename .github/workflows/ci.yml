@@ -1,0 +1,74 @@
+name: CI
+on:
+  pull_request:
+    branches: [ master ]
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  build:
+    name: PHP ${{ matrix.php }} - ${{ matrix.os }}
+
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+        php:
+          - 8.1
+
+    services:
+      postgres:
+        image: postgres:13.6
+        env:
+          POSTGRES_DB: yii2-history-tests
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP with PECL extension
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer:v2
+          extensions: imagick, pdo_pgsql, opcache
+          ini-values: opcache.enable=1, opcache.enable_cli=1, apc.enable_cli=1
+        env:
+          COMPOSER_TOKEN: ${{ secrets.COMPOSER_GITHUB_TOKEN }}
+
+      - name: Check php and composer
+        run: php -v && composer --version
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install composer dependencies
+        run: composer install
+
+      - name: Prepare test
+        run: cp tests/.env.example tests/.env
+
+      - name: Run tests
+        run: vendor/bin/codecept run
+        env:
+          COMPOSER_TOKEN: ${{ secrets.COMPOSER_GITHUB_TOKEN }}
