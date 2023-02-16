@@ -10,7 +10,8 @@
 		}
 	],
 	"require": {
-		"php": ">=8.0"
+		"php": ">=8.0",
+		"pozitronik/yii2-traits" : "^1.0.0"
 	},
 	"require-dev": {
 		"yiisoft/yii2": "dev-master",

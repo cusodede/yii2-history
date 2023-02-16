@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace app\models;
 
+use pozitronik\helpers\Utils;
 use yii\db\ActiveRecord;
 use yii\db\Exception;
 use yii\web\IdentityInterface;
