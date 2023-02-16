@@ -21,6 +21,8 @@ jobs:
 
     services:
       postgres:
+        hostname: yii2_history_postgres
+        container_name: yii2_history_postgres
         image: postgres:13.6
         env:
           POSTGRES_DB: yii2-history-tests
