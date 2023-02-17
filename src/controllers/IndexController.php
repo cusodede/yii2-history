@@ -61,7 +61,7 @@ class IndexController extends Controller {
 			'model_class' => $for
 		]);
 		if (null === $logger->loadedModel) throw new InvalidConfigException("Model {$for} not found in application scope (module classNamesMap not configured?)");
-		if (null === $logger->loadedModel = $logger->loadedModel::findOne($id)) throw new NotFoundHttpException("Model {$for}:{$id} not found");
+		if (null === $logger->loadedModel::findOne($id)) throw new NotFoundHttpException("Model {$for}:{$id} not found");
 
 		$data = $logger->getModelHistory($level);
 		foreach ($data as &$value) {
