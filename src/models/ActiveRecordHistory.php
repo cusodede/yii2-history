@@ -27,8 +27,8 @@ use yii\db\ActiveRecord;
  * Class ActiveRecordHistory
  * Занимается сохранением/восстановлением истории изменений для ActiveRecord-классов
  *
- * @property mixed $attributesOld Восстановленные прежние атрибуты
- * @property mixed $attributesNew Восстановленные текущие атрибуты
+ * @property array $attributesOld Восстановленные прежние атрибуты
+ * @property array $attributesNew Восстановленные текущие атрибуты
  * @property HistoryTags|null $relatedHistoryTags Связанная с записью модель тега
  * @property null|string $tag Тег записи
  * @property-read int $eventType Тип произошедшего изменения, @see [[HistoryEvent::$eventType]]
@@ -581,9 +581,9 @@ class ActiveRecordHistory extends History {
 
 	/**
 	 * @param string|mixed $value
-	 * @return mixed
+	 * @return array This function is supposed to deserialize only a set of model attributes
 	 */
-	protected function unserialize(mixed $value) {
+	protected function unserialize(mixed $value):array {
 		if (is_resource($value) && 'stream' === get_resource_type($value)) {
 			$serialized = stream_get_contents($value);
 			fseek($value, 0);
@@ -594,33 +594,33 @@ class ActiveRecordHistory extends History {
 	}
 
 	/**
-	 * @return mixed
+	 * @return array
 	 */
-	public function getAttributesOld() {
+	public function getAttributesOld():array {
 		if (null === $this->_oldAttributes) $this->_oldAttributes = $this->unserialize($this->old_attributes);
 		return $this->_oldAttributes;
 	}
 
 	/**
-	 * @param mixed $attributesOld
+	 * @param array $attributesOld
 	 */
-	public function setAttributesOld(mixed $attributesOld):void {
+	public function setAttributesOld(array $attributesOld):void {
 		$this->old_attributes = $this->serialize($attributesOld);
 		$this->_oldAttributes = null;
 	}
 
 	/**
-	 * @return mixed
+	 * @return array
 	 */
-	public function getAttributesNew() {
+	public function getAttributesNew():array {
 		if (null === $this->_newAttributes) $this->_newAttributes = $this->unserialize($this->new_attributes);
 		return $this->_newAttributes;
 	}
 
 	/**
-	 * @param mixed $attributesNew
+	 * @param array $attributesNew
 	 */
-	public function setAttributesNew(mixed $attributesNew):void {
+	public function setAttributesNew(array $attributesNew):void {
 		$this->new_attributes = $this->serialize($attributesNew);
 		$this->_newAttributes = null;
 	}
