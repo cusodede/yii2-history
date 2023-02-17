@@ -99,12 +99,12 @@ class Users extends ActiveRecord implements IdentityInterface {
 	 * @return static
 	 */
 	public static function CreateUser(?int $id = null):self {
-		return new self([
+		return new self(array_filter([
 			'id' => $id,
 			'login' => 'test',
 			'username' => 'test_user',
 			'password' => 'test',
-		]);
+		]));
 	}
 
 	/**
