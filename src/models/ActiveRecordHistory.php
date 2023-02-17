@@ -139,10 +139,11 @@ class ActiveRecordHistory extends History {
 	}
 
 	/**
+	 * Custom delegate support
 	 * @return int|null
 	 */
 	private static function ensureDelegate():?int {
-		if (method_exists(Yii::$app->user, 'getOriginalUserId')) {
+		if (null !== Yii::$app?->user && method_exists(Yii::$app->user, 'getOriginalUserId')) {
 			return Yii::$app->user->getOriginalUserId();
 		}
 		return null;
