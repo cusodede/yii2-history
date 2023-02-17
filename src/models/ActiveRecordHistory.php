@@ -42,12 +42,12 @@ use yii\db\ActiveRecord;
  */
 class ActiveRecordHistory extends History {
 	/**
-	 * @var array|null Хранилка десериализованных старых атрибутов
+	 * @var array|null Storage for old deserialized attributes
 	 */
 	protected ?array $_oldAttributes = null;
 
 	/**
-	 * @var array|null Хранилка десериализованных новых атрибутов
+	 * @var array|null Storage for new deserialized attributes
 	 */
 	protected ?array $_newAttributes = null;
 
