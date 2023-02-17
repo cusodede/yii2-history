@@ -10,11 +10,10 @@ declare(strict_types = 1);
 use cusodede\history\models\ActiveRecordHistory;
 use cusodede\history\models\HistoryEventInterface;
 use cusodede\history\models\HistorySearch;
-use kartik\datetime\DateTimePicker;
-use kartik\grid\DataColumn;
 use pozitronik\widgets\BadgeWidget;
 use yii\data\ActiveDataProvider;
-use kartik\grid\GridView;
+use yii\grid\DataColumn;
+use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\i18n\Formatter;
 use yii\web\View;
@@ -27,12 +26,7 @@ use pozitronik\helpers\Utils;
 	'filterModel' => $searchModel,
 	'summary' => false,
 	'showOnEmpty' => false,
-	'resizableColumns' => true,
-	'responsive' => true,
-	'export' => false,
-	'panel' => [
-		'heading' => $this->title.(($dataProvider->totalCount > 0)?" (".Utils::pluralForm($dataProvider->totalCount, ['запись', 'записи', 'записей']).")":" (нет записей)"),
-	],
+	'caption' => $this->title.(($dataProvider->totalCount > 0)?" (".Utils::pluralForm($dataProvider->totalCount, ['запись', 'записи', 'записей']).")":" (нет записей)"),
 	'formatter' => [
 		'class' => Formatter::class,
 		'nullDisplay' => ''
@@ -54,9 +48,6 @@ use pozitronik\helpers\Utils;
 			'value' => static fn(ActiveRecordHistory $model) => $model->historyEvent->eventCaption,
 			'format' => 'raw',
 			'filter' => HistoryEventInterface::EVENT_TYPE_FRAMEWORK_NAMES,
-			'filterWidgetOptions' => [
-				'pluginOptions' => ['allowClear' => true, 'placeholder' => '']
-			]
 		],
 		[
 			'class' => DataColumn::class,
@@ -65,13 +56,6 @@ use pozitronik\helpers\Utils;
 		[
 			'class' => DataColumn::class,
 			'attribute' => 'at',
-			'filterType' => DateTimePicker::class,
-			'filterWidgetOptions' => [
-				'type' => DateTimePicker::TYPE_INPUT,
-				'pluginOptions' => [
-					'alwaysShowCalendars' => true
-				]
-			]
 		],
 		[
 			'class' => DataColumn::class,

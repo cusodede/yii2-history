@@ -13,8 +13,6 @@
 		"php" : ">=8.0",
 		"pozitronik/yii2-traits" : "^1.0.0",
 		"pozitronik/yii2-badgewidget" : "^2.0.0",
-		"kartik-v/yii2-grid" : "dev-master",
-		"kartik-v/yii2-widget-datetimepicker" : "dev-master",
 		"ramsey/uuid": "4.x-dev"
 	},
 	"require-dev" : {

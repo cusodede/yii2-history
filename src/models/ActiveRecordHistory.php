@@ -20,7 +20,6 @@ use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\base\UnknownClassException;
 use yii\base\UnknownPropertyException;
-use yii\console\Application;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
@@ -160,9 +159,9 @@ class ActiveRecordHistory extends History {
 	}
 
 	/**
-	 * @param ActiveRecord $model
+	 * @param null|ActiveRecord $model
 	 */
-	public function setLoadedModel(ActiveRecord $model):void {
+	public function setLoadedModel(?ActiveRecord $model):void {
 		$this->_loadedModel = $model;
 	}
 

@@ -2,13 +2,13 @@
 declare(strict_types = 1);
 
 use app\models\Users;
-use cusodede\history\models\active_record\History;
+use cusodede\history\HistoryModule;
 
 return [
-	'class' => History::class,
+	'class' => HistoryModule::class,
 	'params' => [
 		'userIdentityClass' => Users::class,
-		'viewPath' =>  './src/views/history'
+		'viewPath' =>  './src/views/default'
 	]
 ];
 
