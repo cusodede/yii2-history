@@ -22,7 +22,7 @@ class ActiveRecordHistoryTest extends Unit {
 	public function testPush():void {
 		$user = Users::CreateUser()->saveAndReturn();
 		static::assertFalse($user->isNewRecord);
-		static::assertTrue(ActiveRecordHistory::push($user, ['a' => 'b', 'c' => 'd'], ['a' => 'x', 'z' => 'y']));
+		static::assertTrue(ActiveRecordHistory::push($user, ['a' => 'b', 'c' => M_PI], ['a' => ['name' => 'value', 'name2' => 'value2']]));
 		$usersLogger = new ActiveRecordHistory(['model_class' => Users::class]);
 		/** @var ActiveRecordHistory[] $usersHistory */
 		$usersHistory = $usersLogger->getHistory($user->id)->all();
@@ -32,8 +32,8 @@ class ActiveRecordHistoryTest extends Unit {
 		static::assertEquals(Users::class, $historyEvent->model_class);
 		static::assertEquals(null, $historyEvent->event);
 		static::assertNull($historyEvent->delegate);
-		static::assertEquals(['a' => 'b', 'c' => 'd'], $historyEvent->attributesOld);
-		static::assertEquals(['a' => 'x', 'z' => 'y'], $historyEvent->attributesNew);
+		static::assertEquals(['a' => 'b', 'c' => M_PI], $historyEvent->attributesOld);
+		static::assertEquals(['a' => ['name' => 'value', 'name2' => 'value2']], $historyEvent->attributesNew);
 	}
 
 	/**
