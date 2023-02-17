@@ -9,7 +9,7 @@ use yii\db\Exception as DbException;
 use yii\db\StaleObjectException;
 
 /**
- *
+ * Simple create/update/delete tests
  */
 class HistoryTest extends Unit {
 
