@@ -1,6 +1,7 @@
 <?php
 declare(strict_types = 1);
 use app\models\Users;
+use Codeception\Exception\ModuleException;
 use cusodede\history\HistoryModule;
 use yii\db\Exception as DbException;
 
@@ -11,10 +12,9 @@ class ViewPathCest {
 	/**
 	 * @param FunctionalTester $I
 	 * @return void
-	 * @throws DbException
+	 * @throws DbException|ModuleException
 	 */
-	public function TestCustomViewPath(FunctionalTester $I):void {
-		$appDir = Yii::getAlias('@app');
+	public function TestViewPath(FunctionalTester $I):void {
 		$user = Users::CreateUser()->saveAndReturn();
 		Yii::$app->setModule('history', [
 			'class' => HistoryModule::class,
