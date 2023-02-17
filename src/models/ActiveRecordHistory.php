@@ -20,7 +20,6 @@ use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\base\UnknownClassException;
 use yii\base\UnknownPropertyException;
-use yii\console\Application;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
