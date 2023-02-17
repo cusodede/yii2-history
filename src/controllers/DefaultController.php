@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace cusodede\history\controllers;
 
+use cusodede\history\HistoryModule;
 use cusodede\history\models\ActiveRecordHistory;
 use cusodede\history\models\HistorySearch;
 use Throwable;
@@ -15,7 +16,14 @@ use yii\web\NotFoundHttpException;
 /**
  * Class IndexController
  */
-class IndexController extends Controller {
+class DefaultController extends Controller {
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getViewPath():string {
+		return HistoryModule::param('viewPath', '@vendor/cusodede/yii2-history/src/views/default');
+	}
 
 	/**
 	 * @return string
