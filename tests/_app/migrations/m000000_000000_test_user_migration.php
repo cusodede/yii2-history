@@ -13,7 +13,7 @@ class m000000_000000_test_user_migration extends Migration {
 	 */
 	public function safeUp() {
 		$this->createTable('users', [
-			'id' => $this->primaryKey(),
+			'id' => $this->primaryKey()->defaultExpression("nextval('users_id_seq')"),
 			'username' => $this->string(255)->notNull()->comment('Отображаемое имя пользователя'),
 			'login' => $this->string(64)->notNull()->comment('Логин'),
 			'password' => $this->string(255)->notNull()->comment('Хеш пароля'),
