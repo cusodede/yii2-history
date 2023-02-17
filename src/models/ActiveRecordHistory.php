@@ -10,6 +10,7 @@ use cusodede\history\models\active_record\HistoryTags;
 use pozitronik\helpers\ModuleHelper;
 use pozitronik\helpers\ReflectionHelper;
 use pozitronik\helpers\ArrayHelper;
+use Ramsey\Uuid\Uuid;
 use ReflectionException;
 use Throwable;
 use Yii;
@@ -75,45 +76,33 @@ class ActiveRecordHistory extends History {
 	}
 
 	/**
-	 * @param null|ActiveRecord $model Модель события
-	 * @param array $oldAttributes Прежние значения
-	 * @param array $newAttributes Новые значения
-	 * @param ActiveRecord|null $relationModel Опционально: модель события
-	 * @param Event|null $event
+	 * @param null|ActiveRecord $model The model
+	 * @param array $oldAttributes Previous attributes values
+	 * @param array $newAttributes New attributes values
+	 * @param ActiveRecord|null $relationModel Optional: relation model
+	 * @param Event|null $event ActiveRecord operation event
+	 * @param string|null $operation_identifier Optional: any arbitrary identifier. All changes with the same identifier will considered
+	 * as one history change.
+	 * @return bool
 	 * @throws InvalidConfigException
 	 * @throws Throwable
 	 */
-	public static function push(?ActiveRecord $model, array $oldAttributes, array $newAttributes, ?ActiveRecord $relationModel = null, ?Event $event = null):void {
+	public static function push(?ActiveRecord $model, array $oldAttributes, array $newAttributes, ?ActiveRecord $relationModel = null, ?Event $event = null, ?string $operation_identifier = null):bool {
 		$log = new self(['storeShortClassNames' => ArrayHelper::getValue(ModuleHelper::params(HistoryModule::class), "storeShortClassNames", false)]);
-		if (get_class(Yii::$app) === Application::class) {
-			$log->setAttributes([
-				'user' => null,
-				'model_class' => null === $model?null:$log->getStoredClassName($model),
-				'model_key' => is_numeric($model->primaryKey)?$model->primaryKey:null,//$pKey может быть массивом
-				'old_attributes' => $log->serialize($oldAttributes),
-				'new_attributes' => $log->serialize($newAttributes),
-				'relation_model' => null === $relationModel?null:$log->getStoredClassName($relationModel),
-				'event' => $event?->name,
-				'scenario' => $model->scenario,
-				'delegate' => null,
-				'operation_identifier' => "Console operation"
-			]);
-		} else {
-			$log->setAttributes([
-				'user' => Yii::$app->user->id,//Предполагается, что фреймворк сконфигурирован с использованием user identity class
-				'model_class' => null === $model?null:$log->getStoredClassName($model),
-				'model_key' => is_numeric($model->primaryKey)?$model->primaryKey:null,//$pKey может быть массивом
-				'old_attributes' => $log->serialize($oldAttributes),
-				'new_attributes' => $log->serialize($newAttributes),
-				'relation_model' => null === $relationModel?null:$log->getStoredClassName($relationModel),
-				'event' => $event?->name,
-				'scenario' => $model->scenario,
-				'delegate' => self::ensureDelegate(),
-				'operation_identifier' => Yii::$app->request->csrfToken
-			]);
-		}
+		$log->setAttributes([
+			'user' => Yii::$app?->user?->id,//Предполагается, что фреймворк сконфигурирован с использованием user identity class
+			'model_class' => null === $model?null:$log->getStoredClassName($model),
+			'model_key' => is_numeric($model->primaryKey)?$model->primaryKey:null,//$pKey может быть массивом
+			'old_attributes' => $log->serialize($oldAttributes),
+			'new_attributes' => $log->serialize($newAttributes),
+			'relation_model' => null === $relationModel?null:$log->getStoredClassName($relationModel),
+			'event' => $event?->name,
+			'scenario' => $model->scenario,
+			'delegate' => self::ensureDelegate(),
+			'operation_identifier' => $operation_identifier??Uuid::uuid7()->toString()
+		]);
 
-		$log->save();
+		return $log->save();
 	}
 
 	/**
