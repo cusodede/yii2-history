@@ -95,11 +95,12 @@ class Users extends ActiveRecord implements IdentityInterface {
 
 	/**
 	 * Создать пользователя
+	 * @param int|null $id
 	 * @return static
 	 */
-	public static function CreateUser():self {
+	public static function CreateUser(?int $id = null):self {
 		return new self([
-			'id' => 1,
+			'id' => $id,
 			'login' => 'test',
 			'username' => 'test_user',
 			'password' => 'test',
