@@ -26,6 +26,7 @@ class ViewPathCest {
 
 		$I->amLoggedInAs($user);
 		$I->amOnRoute('history/index');
+		$I->seeResponseCodeIs(200);
 	}
 
 }
