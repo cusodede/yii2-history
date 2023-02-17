@@ -159,9 +159,9 @@ class ActiveRecordHistory extends History {
 	}
 
 	/**
-	 * @param ActiveRecord $model
+	 * @param null|ActiveRecord $model
 	 */
-	public function setLoadedModel(ActiveRecord $model):void {
+	public function setLoadedModel(?ActiveRecord $model):void {
 		$this->_loadedModel = $model;
 	}
 
