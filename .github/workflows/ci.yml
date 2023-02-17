@@ -35,6 +35,12 @@ jobs:
           - 5432:5432
 
     steps:
+      - name: Set color
+        id: random-color-generator
+        run: echo "SELECTED_COLOR=green" >> $GITHUB_OUTPUT
+      - name: Get color
+        run: echo "The selected color is ${{ steps.random-color-generator.outputs.SELECTED_COLOR }}"
+
       - name: Checkout
         uses: actions/checkout@v3
 
