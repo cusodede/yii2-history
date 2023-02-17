@@ -8,7 +8,7 @@ return [
 	'class' => HistoryModule::class,
 	'params' => [
 		'userIdentityClass' => Users::class,
-		'viewPath' =>  './src/views/history'
+		'viewPath' =>  './src/views/index'
 	]
 ];
 
