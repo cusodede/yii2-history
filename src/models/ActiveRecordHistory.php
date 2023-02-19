@@ -424,7 +424,7 @@ class ActiveRecordHistory extends History {
 			->select(['operation_identifier'])
 			->where(['model_class' => $this->getStoredClassName(), 'model_key' => $this->loadedModel->primaryKey])
 			->groupBy(['operation_identifier'])
-			->orderBy(['MAX(id)' => SORT_DESC])
+			->orderBy(['MAX(id)' => SORT_DESC])//todo: при записи в джобе порядок истории должен сортироваться по дате
 			->asArray()
 			->all(), 'operation_identifier');
 	}
