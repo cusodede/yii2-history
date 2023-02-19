@@ -18,6 +18,7 @@ $config = [
 		'@bower' => '@vendor/bower-asset',
 		'@npm' => '@vendor/npm-asset',
 		'@tests' => '@app/tests',
+		'@cusodede' => '@vendor/cusodede'
 	],
 	'components' => [
 		'queue' => $queue,
