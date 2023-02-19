@@ -41,6 +41,8 @@ use yii\db\ActiveRecord;
  * @property bool $storeShortClassNames Сохранять короткие/полные имена классов. Если параметр задан в конфиге модуля, то загрузится из конфига
  */
 class ActiveRecordHistory extends History {
+	use DelegateTrait;
+
 	/**
 	 * @var array|null Storage for old deserialized attributes
 	 */
@@ -124,17 +126,6 @@ class ActiveRecordHistory extends History {
 		/** @var self $taggedRecord */
 		$taggedRecord->tag = $tag;
 		return true;
-	}
-
-	/**
-	 * Custom delegate support
-	 * @return int|null
-	 */
-	protected static function ensureDelegate():?int {
-		if (null !== Yii::$app?->user && method_exists(Yii::$app->user, 'getOriginalUserId')) {
-			return Yii::$app->user->getOriginalUserId();
-		}
-		return null;
 	}
 
 	/**
