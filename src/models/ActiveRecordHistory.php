@@ -121,7 +121,7 @@ class ActiveRecordHistory extends History {
 				'model_class' => $log->getStoredClassName($model),
 				'model_key' => is_numeric($model->primaryKey)?$model->primaryKey:null//$pKey может быть массивом
 			])->andFilterWhere(['operation_identifier' => $operation_identifier])
-				->orderBy(['id' => SORT_DESC])
+				->orderBy(['at' => SORT_DESC, 'id' => SORT_DESC])
 				->one()) return false;
 		/** @var self $taggedRecord */
 		$taggedRecord->tag = $tag;
@@ -400,7 +400,11 @@ class ActiveRecordHistory extends History {
 	 * @throws InvalidConfigException
 	 */
 	public function getHistoryLevelCount():int {
-		return (int)self::find()->select('operation_identifier')->where(['model_class' => $this->getStoredClassName(), 'model_key' => $this->loadedModel->primaryKey])->distinct()->count('operation_identifier');
+		return (int)self::find()
+			->select('operation_identifier')
+			->where(['model_class' => $this->getStoredClassName(), 'model_key' => $this->loadedModel->primaryKey])
+			->distinct()
+			->count('operation_identifier');
 	}
 
 	/**
@@ -410,7 +414,10 @@ class ActiveRecordHistory extends History {
 	 * @throws InvalidConfigException
 	 */
 	private function getStepHistory(string $step_identifier):array {
-		return self::find()->where(['operation_identifier' => $step_identifier, 'model_class' => $this->getStoredClassName(), 'model_key' => $this->loadedModel->primaryKey])->orderBy(['id' => SORT_DESC])->all();
+		return self::find()
+			->where(['operation_identifier' => $step_identifier, 'model_class' => $this->getStoredClassName(), 'model_key' => $this->loadedModel->primaryKey])
+			->orderBy(['at' => SORT_DESC, 'id' => SORT_DESC])
+			->all();
 	}
 
 	/**
@@ -420,11 +427,11 @@ class ActiveRecordHistory extends History {
 	 * @throws Throwable
 	 */
 	private function getModelHistoryStepsIdentifiers():array {
-		return ArrayHelper::keymap(self::find()
+		return ArrayHelper::keymap(static::find()
 			->select(['operation_identifier'])
 			->where(['model_class' => $this->getStoredClassName(), 'model_key' => $this->loadedModel->primaryKey])
 			->groupBy(['operation_identifier'])
-			->orderBy(['MAX(id)' => SORT_DESC])//todo: при записи в джобе порядок истории должен сортироваться по дате
+			->orderBy(['at' => SORT_DESC, 'MAX(id)' => SORT_DESC])
 			->asArray()
 			->all(), 'operation_identifier');
 	}
@@ -492,7 +499,8 @@ class ActiveRecordHistory extends History {
 	 */
 	public function getHistory(int $modelKey):ActiveQuery {
 		return self::find()
-			->where(['model_class' => null === $this->loadedModel?$this->model_class:$this->getStoredClassName(), 'model_key' => $modelKey])->orderBy('at');
+			->where(['model_class' => null === $this->loadedModel?$this->model_class:$this->getStoredClassName(), 'model_key' => $modelKey])
+			->orderBy('at');
 	}
 
 	/**
@@ -537,7 +545,11 @@ class ActiveRecordHistory extends History {
 	 */
 	public function getTagHistoryLevel(string $tag):?int {
 		/** @var self[] $modelHistory */
-		$modelHistory = self::find()->where(['model_class' => $this->getStoredClassName($this->loadedModel), 'model_key' => $this->loadedModel->primaryKey])->joinWith(['relHistoryTags'])->orderBy(['id' => SORT_DESC])->all();
+		$modelHistory = self::find()
+			->where(['model_class' => $this->getStoredClassName($this->loadedModel), 'model_key' => $this->loadedModel->primaryKey])
+			->joinWith(['relHistoryTags'])
+			->orderBy(['at' => SORT_DESC, 'id' => SORT_DESC])
+			->all();
 		$result = 0;
 		$oi = '';
 		foreach ($modelHistory as $value) {
