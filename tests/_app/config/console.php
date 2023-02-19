@@ -10,6 +10,7 @@ $config = [
 	'id' => 'basic-console',
 	'basePath' => dirname(__DIR__),
 	'controllerNamespace' => 'app\commands',
+	'bootstrap' => ['queue'],
 	'modules' => [
 		'history' => $history,
 	],
