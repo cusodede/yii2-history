@@ -3,7 +3,10 @@ declare(strict_types = 1);
 
 namespace cusodede\history\behaviors;
 
+use cusodede\history\HistoryModule;
+use cusodede\history\jobs\HistoryJob;
 use cusodede\history\models\ActiveRecordHistory;
+use Throwable;
 use yii\base\Behavior;
 use yii\base\Event;
 use yii\base\InvalidConfigException;
@@ -57,7 +60,7 @@ class HistoryBehavior extends Behavior {
 			ActiveRecord::EVENT_AFTER_INSERT => function(Event $event) {
 				/** @var ActiveRecord $model */
 				[$model, $attributes, $relation] = $this->getModelData();
-				ActiveRecordHistory::push($model, [], $attributes, $relation, $event);
+				static::push($model, [], $attributes, $relation, $event);
 			},
 			ActiveRecord::EVENT_AFTER_UPDATE => function(AfterSaveEvent $event) {
 				if (is_callable($this->afterUpdate)) {//полностью переопределяем метод. Введено, как хак сохранения плохо тупо сделанных периодов. Нужно либо перепроектировать периоды, либо придумать логичную схему для правил
@@ -70,14 +73,32 @@ class HistoryBehavior extends Behavior {
 				foreach ($event->changedAttributes as $key => $value) {
 					$newAttributes[$key] = $model->$key;
 				}
-				if ([] !== $newAttributes) ActiveRecordHistory::push($model, $event->changedAttributes, $newAttributes, $relation, $event);
+				if ([] !== $newAttributes) static::push($model, $event->changedAttributes, $newAttributes, $relation, $event);
 			},
 			ActiveRecord::EVENT_AFTER_DELETE => function(Event $event) {
 				/** @var ActiveRecord $model */
 				[$model, $attributes, $relation] = $this->getModelData();
-				ActiveRecordHistory::push($model, $attributes, [], $relation, $event);
+				static::push($model, $attributes, [], $relation, $event);
 			}
 		];
+	}
+
+	/**
+	 * @param ActiveRecord|null $model
+	 * @param array $oldAttributes
+	 * @param array $newAttributes
+	 * @param ActiveRecord|null $relationModel
+	 * @param Event|null $event
+	 * @return void
+	 * @throws InvalidConfigException
+	 * @throws Throwable
+	 */
+	private static function push(?ActiveRecord $model, array $oldAttributes, array $newAttributes, ?ActiveRecord $relationModel = null, ?Event $event = null):void {
+		if (null === $queue = HistoryModule::getQueue()) {
+			ActiveRecordHistory::push($model, $oldAttributes, $newAttributes, $relationModel, $event);
+		} else {
+			$queue->push(HistoryJob::push($model, $oldAttributes, $newAttributes, $relationModel, $event));
+		}
 	}
 
 }
