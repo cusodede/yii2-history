@@ -50,9 +50,10 @@ class HistoryJob extends History implements JobInterface {
 	public function execute($queue) {
 		$saveHistoryModel = new ActiveRecordHistory([
 			'storeShortClassNames' => $this->storeShortClassNames,
-			'at' => $this->at,
+//			'at' => $this->at,
 			'user' => $this->user,
 			'model_class' => $this->model_class,
+			'model_key' => $this->model_key,
 			'relation_model'=> $this->relation_model,
 			'event' => $this->event,
 			'scenario' => $this->scenario,
