@@ -9,6 +9,7 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Module;
 use yii\db\ActiveRecordInterface;
+use yii\queue\Queue;
 
 /**
  * Class HistoryModule
@@ -31,6 +32,19 @@ class HistoryModule extends Module {
 				:$identity;
 		}
 		return static::$_userIdentityClass;
+	}
+
+	/**
+	 * Returns configured module Queue component, or null, if not configured
+	 * @return Queue|null
+	 * @throws InvalidConfigException
+	 * @throws Throwable
+	 */
+	public static function getQueue():?Queue {
+		if (null === $queue = static::param('queue')) return null;
+		return is_string($queue)
+			?Yii::$app->$queue
+			:Yii::createObject($queue);
 	}
 
 }
