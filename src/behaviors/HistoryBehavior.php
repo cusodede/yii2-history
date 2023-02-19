@@ -94,11 +94,9 @@ class HistoryBehavior extends Behavior {
 	 * @throws Throwable
 	 */
 	private static function push(?ActiveRecord $model, array $oldAttributes, array $newAttributes, ?ActiveRecord $relationModel = null, ?Event $event = null):void {
-		if (null === $queue = HistoryModule::getQueue()) {
-			ActiveRecordHistory::push($model, $oldAttributes, $newAttributes, $relationModel, $event);
-		} else {
-			$queue->push(HistoryJob::push($model, $oldAttributes, $newAttributes, $relationModel, $event));
-		}
+		(null === $queue = HistoryModule::getQueue())
+			?ActiveRecordHistory::push($model, $oldAttributes, $newAttributes, $relationModel, $event)
+			:$queue->push(HistoryJob::push($model, $oldAttributes, $newAttributes, $relationModel, $event));
 	}
 
 }
