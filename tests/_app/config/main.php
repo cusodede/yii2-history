@@ -4,12 +4,12 @@ declare(strict_types = 1);
 use app\models\Users;
 use yii\log\FileTarget;
 use yii\caching\DummyCache;
-use yii\queue\file\Queue;
 use yii\web\AssetManager;
 use yii\web\ErrorHandler;
 
 $history = require __DIR__.'/history.php';
 $db = require __DIR__.'/db.php';
+$queue = require __DIR__.'/queue.php';
 
 $config = [
 	'id' => 'basic',
@@ -24,11 +24,7 @@ $config = [
 		'history' => $history,
 	],
 	'components' => [
-		'queue' => [
-			'class' => Queue::class,
-			'path' => '@runtime/queues/common',
-			'ttr' => 10
-		],
+		'queue' => $queue,
 		'request' => [
 			'cookieValidationKey' => 'sosijopu',
 		],

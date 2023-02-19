@@ -1,9 +1,10 @@
-<?php
+<?php /** @noinspection UsingInclusionReturnValueInspection */
 declare(strict_types = 1);
 use yii\caching\DummyCache;
 
 $db = require __DIR__.'/db.php';
 $history = require __DIR__.'/history.php';
+$queue = require __DIR__.'/queue.php';
 
 $config = [
 	'id' => 'basic-console',
@@ -19,6 +20,7 @@ $config = [
 		'@tests' => '@app/tests',
 	],
 	'components' => [
+		'queue' => $queue,
 		'cache' => [
 			'class' => DummyCache::class,
 		],
