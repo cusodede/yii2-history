@@ -93,6 +93,10 @@ class HistoryJobTest extends Unit {
 			]
 		]);
 
+		/** @var Queue $queue */
+		$queue = HistoryModule::getQueue();
+		$queue->clear();//just to be sure
+
 		$user = Users::CreateUser()->saveAndReturn();
 		static::assertFalse($user->isNewRecord);
 		$oldAttributes = $user->attributes;
@@ -104,8 +108,6 @@ class HistoryJobTest extends Unit {
 		$usersHistory = $usersLogger->getHistory($user->id)->all();
 		static::assertCount(0, $usersHistory);//history shouldn't be written
 
-		/** @var Queue $queue */
-		$queue = HistoryModule::getQueue();
 		$queue->run(false, 10);
 
 		$usersHistory = $usersLogger->getHistory($user->id)->all();
