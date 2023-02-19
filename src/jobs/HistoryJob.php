@@ -4,7 +4,6 @@ declare(strict_types = 1);
 namespace cusodede\history\jobs;
 
 use cusodede\history\HistoryModule;
-use cusodede\history\models\active_record\History;
 use cusodede\history\models\ActiveRecordHistory;
 use cusodede\history\models\DelegateTrait;
 use pozitronik\helpers\ArrayHelper;
@@ -21,7 +20,7 @@ use yii\queue\JobInterface;
 /**
  * This job stores enqueued history changes to DB tables
  */
-class HistoryJob extends History implements JobInterface {
+class HistoryJob implements JobInterface {
 	use DelegateTrait;
 
 	public ?string $at;
@@ -54,7 +53,7 @@ class HistoryJob extends History implements JobInterface {
 			'user' => $this->user,
 			'model_class' => $this->model_class,
 			'model_key' => $this->model_key,
-			'relation_model'=> $this->relation_model,
+			'relation_model' => $this->relation_model,
 			'event' => $this->event,
 			'scenario' => $this->scenario,
 			'delegate' => $this->delegate,
@@ -92,21 +91,19 @@ class HistoryJob extends History implements JobInterface {
 	 * @throws Throwable
 	 */
 	public static function push(?ActiveRecord $model, array $oldAttributes, array $newAttributes, ?ActiveRecord $relationModel = null, ?Event $event = null, ?string $operation_identifier = null):self {
-		$historyJob = new static(['storeShortClassNames' => ArrayHelper::getValue(ModuleHelper::params(HistoryModule::class), "storeShortClassNames", false)]);
-		$historyJob->setAttributes([
-			'at' => date('Y-m-d H:i:s'),//store the current date, not a writing date
-			'user' => Yii::$app?->user?->id,//Assuming, that the framework is configured with user identities
-			'model_class' => null === $model?null:$historyJob->getStoredClassName($model),
-			'model_key' => is_numeric($model->primaryKey)?$model->primaryKey:null,//$pKey can be an array
-			'old_attributes' => $oldAttributes,
-			'new_attributes' => $newAttributes,
-			'relation_model' => null === $relationModel?null:$historyJob->getStoredClassName($relationModel),
-			'event' => $event?->name,
-			'scenario' => $model->scenario,
-			'delegate' => self::ensureDelegate(),
-			'operation_identifier' => $operation_identifier??Uuid::uuid7()->toString()
-		]);
-
+		$historyJob = new static();
+		$historyJob->storeShortClassNames = ArrayHelper::getValue(ModuleHelper::params(HistoryModule::class), "storeShortClassNames", false);
+		$historyJob->at = date('Y-m-d H:i:s');//store the current date, not a writing date
+		$historyJob->user = Yii::$app?->user?->id;//Assuming, that the framework is configured with user identities
+		$historyJob->model_class = null === $model?null:$historyJob->getStoredClassName($model);
+		$historyJob->model_key = is_numeric($model->primaryKey)?$model->primaryKey:null;//$pKey can be an array
+		$historyJob->old_attributes = $oldAttributes;
+		$historyJob->new_attributes = $newAttributes;
+		$historyJob->relation_model = null === $relationModel?null:$historyJob->getStoredClassName($relationModel);
+		$historyJob->event = $event?->name;
+		$historyJob->scenario = $model->scenario;
+		$historyJob->delegate = self::ensureDelegate();
+		$historyJob->operation_identifier = $operation_identifier??Uuid::uuid7()->toString();
 		return $historyJob;
 	}
 }
