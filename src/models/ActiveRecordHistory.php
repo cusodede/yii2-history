@@ -555,7 +555,7 @@ class ActiveRecordHistory extends History {
 	 * @param $value
 	 * @return string
 	 */
-	protected function serialize($value):string {
+	public function serialize($value):string {
 		return (null === $this->serializer)?serialize($value):call_user_func($this->serializer[0], $value);
 	}
 
