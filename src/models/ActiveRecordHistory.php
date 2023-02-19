@@ -103,7 +103,7 @@ class ActiveRecordHistory extends History {
 			'operation_identifier' => $operation_identifier??Uuid::uuid7()->toString()
 		]);
 
-		return $log->save();
+		return $log->save();//todo: error logging
 	}
 
 	/**
