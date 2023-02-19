@@ -24,7 +24,7 @@ use yii\queue\JobInterface;
 class HistoryJob extends History implements JobInterface {
 	use DelegateTrait;
 
-	public string $at;//todo: make writable
+	public ?string $at;
 	public int|null $user;
 	public string|null $model_class;
 	public int|null $model_key;
@@ -50,7 +50,7 @@ class HistoryJob extends History implements JobInterface {
 	public function execute($queue) {
 		$saveHistoryModel = new ActiveRecordHistory([
 			'storeShortClassNames' => $this->storeShortClassNames,
-//			'at' => $this->at,
+			'at' => $this->at,
 			'user' => $this->user,
 			'model_class' => $this->model_class,
 			'model_key' => $this->model_key,
