@@ -351,7 +351,7 @@ class ActiveRecordHistory extends History {
 				->select(['operation_identifier'])
 				->where(['model_class' => $this->getStoredClassName(), 'model_key' => $this->loadedModel->primaryKey])
 				->groupBy(['operation_identifier'])
-				->orderBy(['MAX(id)' => SORT_DESC])
+				->orderBy([/*'at' => SORT_DESC, */'MAX(id)' => SORT_DESC])
 				->offset($level - 1)
 				->limit(1)
 				->all()])
@@ -431,7 +431,7 @@ class ActiveRecordHistory extends History {
 			->select(['operation_identifier'])
 			->where(['model_class' => $this->getStoredClassName(), 'model_key' => $this->loadedModel->primaryKey])
 			->groupBy(['operation_identifier'])
-			->orderBy(['at' => SORT_DESC, 'MAX(id)' => SORT_DESC])
+			->orderBy([/*'at' => SORT_DESC, */'MAX(id)' => SORT_DESC])
 			->asArray()
 			->all(), 'operation_identifier');
 	}
