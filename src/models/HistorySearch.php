@@ -51,7 +51,7 @@ class HistorySearch extends History {
 	 */
 	private function setSort($dataProvider):void {
 		$dataProvider->setSort([
-			'defaultOrder' => ['id' => SORT_DESC],
+			'defaultOrder' => ['at' => SORT_DESC, 'id' => SORT_DESC],
 			'attributes' => [
 				'id',
 				'at',

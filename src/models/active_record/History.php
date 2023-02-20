@@ -14,7 +14,7 @@ use yii\web\IdentityInterface;
 
 /**
  * @property int $id
- * @property-read string $at CURRENT_TIMESTAMP
+ * @property string $at CURRENT_TIMESTAMP
  * @property int|null $user id пользователя, совершившего изменение
  * @property string|null $model_class Класс (FQN, либо алиас, сопоставленный в конфиге)
  * @property int|null $model_key Первичный ключ модели, если есть. Составные ключи не поддерживаются.
@@ -44,7 +44,7 @@ class History extends ActiveRecord {
 		return [
 			[['user', 'model_key', 'delegate'], 'integer'],
 			[['old_attributes', 'new_attributes'], 'string'],
-			[['model_class', 'relation_model', 'scenario', 'event', 'operation_identifier'], 'string', 'max' => 255],
+			[['at', 'model_class', 'relation_model', 'scenario', 'event', 'operation_identifier'], 'string', 'max' => 255],
 		];
 	}
 

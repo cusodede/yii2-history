@@ -13,10 +13,11 @@
 		"php" : ">=8.0",
 		"pozitronik/yii2-traits" : "^1.0.0",
 		"pozitronik/yii2-badgewidget" : "^2.0.0",
-		"ramsey/uuid": "4.x-dev"
+		"ramsey/uuid": "4.x-dev",
+		"yiisoft/yii2" : "^2.0.0",
+		"yiisoft/yii2-queue": "^2.0.0"
 	},
 	"require-dev" : {
-		"yiisoft/yii2" : "dev-master",
 		"yiisoft/yii2-gii" : "dev-master",
 		"phpunit/phpunit" : "^9.5",
 		"codeception/codeception" : "^4.1",

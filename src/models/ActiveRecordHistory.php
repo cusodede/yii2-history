@@ -41,6 +41,8 @@ use yii\db\ActiveRecord;
  * @property bool $storeShortClassNames Сохранять короткие/полные имена классов. Если параметр задан в конфиге модуля, то загрузится из конфига
  */
 class ActiveRecordHistory extends History {
+	use DelegateTrait;
+
 	/**
 	 * @var array|null Storage for old deserialized attributes
 	 */
@@ -101,7 +103,7 @@ class ActiveRecordHistory extends History {
 			'operation_identifier' => $operation_identifier??Uuid::uuid7()->toString()
 		]);
 
-		return $log->save();
+		return $log->save();//todo: error logging
 	}
 
 	/**
@@ -114,27 +116,16 @@ class ActiveRecordHistory extends History {
 	 * @throws Throwable
 	 */
 	public static function addTag(ActiveRecord $model, string $tag = HistoryTags::TAG_CREATED, ?string $operation_identifier = null):bool {
-		$log = new self(['storeShortClassNames' => ArrayHelper::getValue(ModuleHelper::params(HistoryModule::class), "storeShortClassNames", false)]);
+		$log = new static(['storeShortClassNames' => ArrayHelper::getValue(ModuleHelper::params(HistoryModule::class), "storeShortClassNames", false)]);
 		if (null === $taggedRecord = self::find()->where([
 				'model_class' => $log->getStoredClassName($model),
 				'model_key' => is_numeric($model->primaryKey)?$model->primaryKey:null//$pKey может быть массивом
 			])->andFilterWhere(['operation_identifier' => $operation_identifier])
-				->orderBy(['id' => SORT_DESC])
+				->orderBy(['at' => SORT_DESC, 'id' => SORT_DESC])
 				->one()) return false;
 		/** @var self $taggedRecord */
 		$taggedRecord->tag = $tag;
 		return true;
-	}
-
-	/**
-	 * Custom delegate support
-	 * @return int|null
-	 */
-	private static function ensureDelegate():?int {
-		if (null !== Yii::$app?->user && method_exists(Yii::$app->user, 'getOriginalUserId')) {
-			return Yii::$app->user->getOriginalUserId();
-		}
-		return null;
 	}
 
 	/**
@@ -360,7 +351,7 @@ class ActiveRecordHistory extends History {
 				->select(['operation_identifier'])
 				->where(['model_class' => $this->getStoredClassName(), 'model_key' => $this->loadedModel->primaryKey])
 				->groupBy(['operation_identifier'])
-				->orderBy(['MAX(id)' => SORT_DESC])
+				->orderBy([/*'at' => SORT_DESC, */'MAX(id)' => SORT_DESC])
 				->offset($level - 1)
 				->limit(1)
 				->all()])
@@ -409,7 +400,11 @@ class ActiveRecordHistory extends History {
 	 * @throws InvalidConfigException
 	 */
 	public function getHistoryLevelCount():int {
-		return (int)self::find()->select('operation_identifier')->where(['model_class' => $this->getStoredClassName(), 'model_key' => $this->loadedModel->primaryKey])->distinct()->count('operation_identifier');
+		return (int)self::find()
+			->select('operation_identifier')
+			->where(['model_class' => $this->getStoredClassName(), 'model_key' => $this->loadedModel->primaryKey])
+			->distinct()
+			->count('operation_identifier');
 	}
 
 	/**
@@ -419,7 +414,10 @@ class ActiveRecordHistory extends History {
 	 * @throws InvalidConfigException
 	 */
 	private function getStepHistory(string $step_identifier):array {
-		return self::find()->where(['operation_identifier' => $step_identifier, 'model_class' => $this->getStoredClassName(), 'model_key' => $this->loadedModel->primaryKey])->orderBy(['id' => SORT_DESC])->all();
+		return self::find()
+			->where(['operation_identifier' => $step_identifier, 'model_class' => $this->getStoredClassName(), 'model_key' => $this->loadedModel->primaryKey])
+			->orderBy(['at' => SORT_DESC, 'id' => SORT_DESC])
+			->all();
 	}
 
 	/**
@@ -429,11 +427,11 @@ class ActiveRecordHistory extends History {
 	 * @throws Throwable
 	 */
 	private function getModelHistoryStepsIdentifiers():array {
-		return ArrayHelper::keymap(self::find()
+		return ArrayHelper::keymap(static::find()
 			->select(['operation_identifier'])
 			->where(['model_class' => $this->getStoredClassName(), 'model_key' => $this->loadedModel->primaryKey])
 			->groupBy(['operation_identifier'])
-			->orderBy(['MAX(id)' => SORT_DESC])
+			->orderBy([/*'at' => SORT_DESC, */'MAX(id)' => SORT_DESC])
 			->asArray()
 			->all(), 'operation_identifier');
 	}
@@ -501,7 +499,8 @@ class ActiveRecordHistory extends History {
 	 */
 	public function getHistory(int $modelKey):ActiveQuery {
 		return self::find()
-			->where(['model_class' => null === $this->loadedModel?$this->model_class:$this->getStoredClassName(), 'model_key' => $modelKey])->orderBy('at');
+			->where(['model_class' => null === $this->loadedModel?$this->model_class:$this->getStoredClassName(), 'model_key' => $modelKey])
+			->orderBy('at');
 	}
 
 	/**
@@ -546,7 +545,11 @@ class ActiveRecordHistory extends History {
 	 */
 	public function getTagHistoryLevel(string $tag):?int {
 		/** @var self[] $modelHistory */
-		$modelHistory = self::find()->where(['model_class' => $this->getStoredClassName($this->loadedModel), 'model_key' => $this->loadedModel->primaryKey])->joinWith(['relHistoryTags'])->orderBy(['id' => SORT_DESC])->all();
+		$modelHistory = self::find()
+			->where(['model_class' => $this->getStoredClassName($this->loadedModel), 'model_key' => $this->loadedModel->primaryKey])
+			->joinWith(['relHistoryTags'])
+			->orderBy(['at' => SORT_DESC, 'id' => SORT_DESC])
+			->all();
 		$result = 0;
 		$oi = '';
 		foreach ($modelHistory as $value) {
@@ -564,7 +567,7 @@ class ActiveRecordHistory extends History {
 	 * @param $value
 	 * @return string
 	 */
-	protected function serialize($value):string {
+	public function serialize($value):string {
 		return (null === $this->serializer)?serialize($value):call_user_func($this->serializer[0], $value);
 	}
 
