@@ -144,6 +144,15 @@ If parameter is skipped or set to null, all writings will be made synchronously,
 **storeShortClassNames**: `bool`. Experimental option, that allows to store only short class name instead of fully qualified namespace
 (example: `Users` instead of `app\models\Users`).
 
+Running local tests
+-------------------
+
+Copy `/tests/.env.sample` to `/tests/.env` (change variables there, if it required in your environment) and
+run `composer install` (once) and `php vendor/bin/codecept run` (to execute tests).
+
+For Docker environment, you can just execute `docker-compose up -d --build` command to build app containers,
+then run `docker exec -it yii2_history_php /bin/bash` to open bash console inside php container. Next, just do as written above.
+
 Documentation ToDos:
 -------------------
 
