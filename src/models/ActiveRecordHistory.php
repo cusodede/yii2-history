@@ -91,7 +91,7 @@ class ActiveRecordHistory extends History {
 	public static function push(?ActiveRecord $model, array $oldAttributes, array $newAttributes, ?ActiveRecord $relationModel = null, ?Event $event = null, ?string $operation_identifier = null):bool {
 		$log = new self(['storeShortClassNames' => ArrayHelper::getValue(ModuleHelper::params(HistoryModule::class), "storeShortClassNames", false)]);
 		$log->setAttributes([
-			'user' => Yii::$app?->user?->id,//Предполагается, что фреймворк сконфигурирован с использованием user identity class
+			'user' => Yii::$app->hasProperty('user')?Yii::$app->user?->id:null,//Let's assume framework configured with user identity class
 			'model_class' => null === $model?null:$log->getStoredClassName($model),
 			'model_key' => is_numeric($model->primaryKey)?$model->primaryKey:null,//$pKey может быть массивом
 			'old_attributes' => $log->serialize($oldAttributes),
@@ -351,7 +351,7 @@ class ActiveRecordHistory extends History {
 				->select(['operation_identifier'])
 				->where(['model_class' => $this->getStoredClassName(), 'model_key' => $this->loadedModel->primaryKey])
 				->groupBy(['operation_identifier'])
-				->orderBy([/*'at' => SORT_DESC, */'MAX(id)' => SORT_DESC])
+				->orderBy([/*'at' => SORT_DESC, */ 'MAX(id)' => SORT_DESC])
 				->offset($level - 1)
 				->limit(1)
 				->all()])
@@ -431,7 +431,7 @@ class ActiveRecordHistory extends History {
 			->select(['operation_identifier'])
 			->where(['model_class' => $this->getStoredClassName(), 'model_key' => $this->loadedModel->primaryKey])
 			->groupBy(['operation_identifier'])
-			->orderBy([/*'at' => SORT_DESC, */'MAX(id)' => SORT_DESC])
+			->orderBy([/*'at' => SORT_DESC, */ 'MAX(id)' => SORT_DESC])
 			->asArray()
 			->all(), 'operation_identifier');
 	}
