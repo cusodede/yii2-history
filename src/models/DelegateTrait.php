@@ -14,9 +14,8 @@ trait DelegateTrait {
 	 * @return int|null
 	 */
 	protected static function ensureDelegate():?int {
-		if (null !== Yii::$app?->user && method_exists(Yii::$app->user, 'getOriginalUserId')) {
-			return Yii::$app->user->getOriginalUserId();
-		}
-		return null;
+		return (Yii::$app->hasProperty('user') && method_exists(Yii::$app->user, 'getOriginalUserId'))
+			?Yii::$app->user->getOriginalUserId()
+			:null;
 	}
 }

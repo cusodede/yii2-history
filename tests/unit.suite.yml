@@ -10,7 +10,7 @@ modules:
     - Db
     - Cli
     - Yii2:
-        configFile: 'config/test.php'
+        configFile: 'tests/_app/config/main.php'
   step_decorators: ~
 extensions:
   enabled:

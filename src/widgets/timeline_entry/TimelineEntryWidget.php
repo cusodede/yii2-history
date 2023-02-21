@@ -7,7 +7,7 @@ use cusodede\history\models\TimelineEntry;
 use yii\base\Widget;
 
 /**
- * Виджет элемента таймлайна
+ * Timeline element widget
  * Class TimelineWidget
  *
  * @property TimelineEntry $entry
@@ -16,7 +16,6 @@ class TimelineEntryWidget extends Widget {
 	public TimelineEntry $entry;
 
 	/**
-	 * Функция возврата результата рендеринга виджета
 	 * @return string
 	 */
 	public function run():string {
