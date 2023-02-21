@@ -13,11 +13,13 @@ class m000000_000001_history_module_fix_delegate_field extends Migration {
 	 * {@inheritdoc}
 	 */
 	public function safeUp() {
-		$this->dropIndex('delegate', self::TABLE_NAME);
-		$this->dropColumn(self::TABLE_NAME, 'delegate');
+		if (null === Yii::$app->db->getTableSchema(self::TABLE_NAME, true)) {
+			$this->dropIndex('delegate', self::TABLE_NAME);
+			$this->dropColumn(self::TABLE_NAME, 'delegate');
 
-		$this->addColumn(self::TABLE_NAME, 'delegate', $this->integer()->null()->after('operation_identifier'));
-		$this->createIndex('delegate', self::TABLE_NAME, 'delegate');
+			$this->addColumn(self::TABLE_NAME, 'delegate', $this->integer()->null()->after('operation_identifier'));
+			$this->createIndex('delegate', self::TABLE_NAME, 'delegate');
+		}
 	}
 
 	/**
