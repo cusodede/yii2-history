@@ -8,3 +8,6 @@ modules:
         configFile: 'tests/_app/config/console.php'
         applicationClass: \yii\console\Application
         recreateApplication: true
+extensions:
+    enabled:
+        - Extensions\DatabaseMigrationExtension
