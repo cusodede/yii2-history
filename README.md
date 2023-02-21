@@ -78,7 +78,8 @@ $config = [
 			'params' => [
 				'userIdentityClass' => Yii::$app->user->identityClass,
 				'viewPath' => '@vendor/cusodede/yii2-history/src/views/default'
-				'queue' => null
+				'queue' => null,
+				'storeShortClassNames' => false
 			]
 		]
 	],
@@ -139,6 +140,9 @@ $config = [
 ```
 
 If parameter is skipped or set to null, all writings will be made synchronously, which may affect on the application speed.
+
+**storeShortClassNames**: `bool`. Experimental option, that allows to store only short class name instead of fully qualified namespace
+(example: `Users` instead of `app\models\Users`).
 
 Documentation ToDos:
 -------------------
