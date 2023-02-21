@@ -1,0 +1,10 @@
+actor: ConsoleTester
+modules:
+  enabled:
+    - \Helper\Console
+    - Filesystem
+    - Asserts
+    - \Helper\Module\Yii2Module:
+        configFile: 'tests/_app/config/console.php'
+        applicationClass: \yii\console\Application
+        recreateApplication: true
