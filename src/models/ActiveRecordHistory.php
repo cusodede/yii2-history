@@ -107,11 +107,11 @@ class ActiveRecordHistory extends History {
 	}
 
 	/**
-	 * Добавляет указанный тег к истории модели
-	 * @param ActiveRecord $model Модель, историю которой тегируем
-	 * @param string $tag Тег
-	 * @param string|null $operation_identifier Тегируемые изменения (null - последнее изменение)
-	 * @return bool True - тег добавлен, false - запись истории не найдена
+	 * Adds a tag to history record
+	 * @param ActiveRecord $model The model, which history is tagged
+	 * @param string $tag The tag
+	 * @param string|null $operation_identifier Identifier of history change (null for the last change)
+	 * @return bool true: tag added, false: history record not found
 	 * @throws InvalidConfigException
 	 * @throws Throwable
 	 */
@@ -275,9 +275,9 @@ class ActiveRecordHistory extends History {
 	}
 
 	/**
-	 * @param string $attributeName Название атрибута, для которого пытаемся найти подстановку
-	 * @param mixed $attributeValue Значение атрибута, которому ищем соответствие
-	 * @return mixed Подстановленное значение (если найдено, иначе переданное значение)
+	 * @param string $attributeName Name of the attribute, which should be substituted
+	 * @param mixed $attributeValue The matched value of an attribute
+	 * @return mixed Substituted value (if found, matched value otherwise)
 	 * @throws InvalidConfigException
 	 * @throws ReflectionException
 	 * @throws Throwable

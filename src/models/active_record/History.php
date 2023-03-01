@@ -16,7 +16,7 @@ use yii\web\IdentityInterface;
  * @property int $id
  * @property string $at CURRENT_TIMESTAMP
  * @property int|null $user id пользователя, совершившего изменение
- * @property string|null $model_class Класс (FQN, либо алиас, сопоставленный в конфиге)
+ * @property string|null $model_class Class (FQN, or configured alias)
  * @property int|null $model_key Первичный ключ модели, если есть. Составные ключи не поддерживаются.
  * @property string|null $old_attributes Old serialized attributes
  * @property string|null $new_attributes New serialized attributes
