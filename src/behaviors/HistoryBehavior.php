@@ -28,7 +28,8 @@ use yii\helpers\ArrayHelper;
 class HistoryBehavior extends Behavior {
 
 	public array $relations = [];
-	public ?array $isRelation = null;
+	/** @var null|array|callable  */
+	public mixed $isRelation = null;
 	public mixed $afterUpdate = null;//php 8.0 has no callable type
 
 	/**
