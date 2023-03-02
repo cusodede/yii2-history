@@ -25,13 +25,13 @@ class HistoryModule extends Module {
 	 * @throws Throwable
 	 */
 	public static function UserIdentityClass():string|ActiveRecordInterface {
-		if (null === static::$_userIdentityClass) {
+		if (null === self::$_userIdentityClass) {
 			$identity = static::param('userIdentityClass')??Yii::$app->user->identityClass;
-			static::$_userIdentityClass = (is_callable($identity))
+			self::$_userIdentityClass = (is_callable($identity))
 				?$identity()
 				:$identity;
 		}
-		return static::$_userIdentityClass;
+		return self::$_userIdentityClass;
 	}
 
 	/**

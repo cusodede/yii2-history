@@ -60,7 +60,7 @@ class HistoryBehavior extends Behavior {
 			ActiveRecord::EVENT_AFTER_INSERT => function(Event $event) {
 				/** @var ActiveRecord $model */
 				[$model, $attributes, $relation] = $this->getModelData();
-				static::push($model, [], $attributes, $relation, $event);
+				self::push($model, [], $attributes, $relation, $event);
 			},
 			ActiveRecord::EVENT_AFTER_UPDATE => function(AfterSaveEvent $event) {
 				if (is_callable($this->afterUpdate)) {//полностью переопределяем метод. Введено, как хак сохранения плохо тупо сделанных периодов. Нужно либо перепроектировать периоды, либо придумать логичную схему для правил
@@ -73,12 +73,12 @@ class HistoryBehavior extends Behavior {
 				foreach ($event->changedAttributes as $key => $value) {
 					$newAttributes[$key] = $model->$key;
 				}
-				if ([] !== $newAttributes) static::push($model, $event->changedAttributes, $newAttributes, $relation, $event);
+				if ([] !== $newAttributes) self::push($model, $event->changedAttributes, $newAttributes, $relation, $event);
 			},
 			ActiveRecord::EVENT_AFTER_DELETE => function(Event $event) {
 				/** @var ActiveRecord $model */
 				[$model, $attributes, $relation] = $this->getModelData();
-				static::push($model, $attributes, [], $relation, $event);
+				self::push($model, $attributes, [], $relation, $event);
 			}
 		];
 	}
