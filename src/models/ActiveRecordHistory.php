@@ -346,7 +346,7 @@ final class ActiveRecordHistory extends History {
 	 */
 	private function getHistoryLevelRecord(int $level):?self {
 		if ($level < 1) return null;
-		return self::find()
+		return self::find() // @phpstan-ignore-line
 			->where(['operation_identifier' => self::find()
 				->select(['operation_identifier'])
 				->where(['model_class' => $this->getStoredClassName(), 'model_key' => $this->loadedModel->primaryKey])
@@ -414,7 +414,7 @@ final class ActiveRecordHistory extends History {
 	 * @throws InvalidConfigException
 	 */
 	private function getStepHistory(string $step_identifier):array {
-		return self::find()
+		return self::find() // @phpstan-ignore-line
 			->where(['operation_identifier' => $step_identifier, 'model_class' => $this->getStoredClassName(), 'model_key' => $this->loadedModel->primaryKey])
 			->orderBy(['at' => SORT_DESC, 'id' => SORT_DESC])
 			->all();
