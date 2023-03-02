@@ -95,4 +95,3 @@ use pozitronik\helpers\Utils;
 		]
 	]
 ]) ?>
-
