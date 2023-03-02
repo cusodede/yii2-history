@@ -40,7 +40,7 @@ use yii\db\ActiveRecord;
  *
  * @property bool $storeShortClassNames Сохранять короткие/полные имена классов. Если параметр задан в конфиге модуля, то загрузится из конфига
  */
-class ActiveRecordHistory extends History {
+final class ActiveRecordHistory extends History {
 	use DelegateTrait;
 
 	/**
@@ -116,7 +116,7 @@ class ActiveRecordHistory extends History {
 	 * @throws Throwable
 	 */
 	public static function addTag(ActiveRecord $model, string $tag = HistoryTags::TAG_CREATED, ?string $operation_identifier = null):bool {
-		$log = new static(['storeShortClassNames' => ArrayHelper::getValue(ModuleHelper::params(HistoryModule::class), "storeShortClassNames", false)]);
+		$log = new self(['storeShortClassNames' => ArrayHelper::getValue(ModuleHelper::params(HistoryModule::class), "storeShortClassNames", false)]);
 		if (null === $taggedRecord = self::find()->where([
 				'model_class' => $log->getStoredClassName($model),
 				'model_key' => is_numeric($model->primaryKey)?$model->primaryKey:null//$pKey может быть массивом
@@ -427,7 +427,7 @@ class ActiveRecordHistory extends History {
 	 * @throws Throwable
 	 */
 	private function getModelHistoryStepsIdentifiers():array {
-		return ArrayHelper::keymap(static::find()
+		return ArrayHelper::keymap(self::find()
 			->select(['operation_identifier'])
 			->where(['model_class' => $this->getStoredClassName(), 'model_key' => $this->loadedModel->primaryKey])
 			->groupBy(['operation_identifier'])
