@@ -320,17 +320,17 @@ final class ActiveRecordHistory extends History {
 	 * @return array
 	 */
 	public static function ArrayKeyValueDiffAssocRecursive(array $array1, array $array2):array {
-		$intersection = array_uintersect_assoc($array1, $array2, static function($value1, $value2) {
+		$intersection = array_uintersect_assoc($array1, $array2, static function($value1, $value2):int {
 			if (is_scalar($value1) && is_scalar($value2)) {
-				return (string)$value1 === (string)$value2;//Внимание! при возврате bool, учитываем, что (bool)true == (int)1
+				return (string)$value1 === (string)$value2?1:0;
 			}
 			if (is_array($value1) && is_array($value2)) {
-				return $value1 === $value2;
+				return $value1 === $value2?1:0;
 			}
 			if ((is_array($value1) && is_scalar($value2)) || (is_array($value2) && is_scalar($value1))) {
-				return false;
+				return 0;
 			}
-			return true;//null;
+			return 1;//null;
 		});//получили разницу в существующих везде атрибутах
 
 		$separate_keys = array_diff_key($array1, $array2);
