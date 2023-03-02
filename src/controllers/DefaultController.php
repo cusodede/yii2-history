@@ -30,7 +30,7 @@ class DefaultController extends Controller {
 	 * @throws Throwable
 	 */
 	public function actionIndex():string {
-		$params = Yii::$app->request->queryParams;
+		$params = Yii::$app->request->queryParams;// @phpstan-ignore-line
 		$searchModel = new HistorySearch();
 		return $this->render('index', [
 			'searchModel' => $searchModel,

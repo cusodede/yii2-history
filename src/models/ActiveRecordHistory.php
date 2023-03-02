@@ -146,7 +146,7 @@ final class ActiveRecordHistory extends History {
 	 * @noinspection PhpIncompatibleReturnTypeInspection - мы можем конкретизировать тип
 	 */
 	public function getLoadedModel():?ActiveRecord {
-		return $this->_loadedModel??ReflectionHelper::LoadClassByName(self::ExpandClassName($this->model_class), null, false);
+		return $this->_loadedModel??ReflectionHelper::LoadClassByName(self::ExpandClassName($this->model_class), null, false); // @phpstan-ignore-line
 	}
 
 	/**
@@ -347,14 +347,14 @@ final class ActiveRecordHistory extends History {
 	private function getHistoryLevelRecord(int $level):?self {
 		if ($level < 1) return null;
 		return self::find() // @phpstan-ignore-line
-			->where(['operation_identifier' => self::find()
-				->select(['operation_identifier'])
-				->where(['model_class' => $this->getStoredClassName(), 'model_key' => $this->loadedModel->primaryKey])
-				->groupBy(['operation_identifier'])
-				->orderBy([/*'at' => SORT_DESC, */ 'MAX(id)' => SORT_DESC])
-				->offset($level - 1)
-				->limit(1)
-				->all()])
+		->where(['operation_identifier' => self::find()
+			->select(['operation_identifier'])
+			->where(['model_class' => $this->getStoredClassName(), 'model_key' => $this->loadedModel->primaryKey])
+			->groupBy(['operation_identifier'])
+			->orderBy([/*'at' => SORT_DESC, */ 'MAX(id)' => SORT_DESC])
+			->offset($level - 1)
+			->limit(1)
+			->all()])
 			->one();
 	}
 
@@ -415,7 +415,7 @@ final class ActiveRecordHistory extends History {
 	 */
 	private function getStepHistory(string $step_identifier):array {
 		return self::find() // @phpstan-ignore-line
-			->where(['operation_identifier' => $step_identifier, 'model_class' => $this->getStoredClassName(), 'model_key' => $this->loadedModel->primaryKey])
+		->where(['operation_identifier' => $step_identifier, 'model_class' => $this->getStoredClassName(), 'model_key' => $this->loadedModel->primaryKey])
 			->orderBy(['at' => SORT_DESC, 'id' => SORT_DESC])
 			->all();
 	}
