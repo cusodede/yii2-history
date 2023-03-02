@@ -6,6 +6,7 @@ namespace cusodede\history\models;
 use cusodede\history\models\active_record\History;
 use Throwable;
 use yii\data\ActiveDataProvider;
+use yii\db\ActiveQueryInterface;
 
 /**
  * Class HistorySearch
@@ -47,9 +48,9 @@ class HistorySearch extends History {
 	}
 
 	/**
-	 * @param $dataProvider
+	 * @param ActiveDataProvider $dataProvider
 	 */
-	private function setSort($dataProvider):void {
+	private function setSort(ActiveDataProvider $dataProvider):void {
 		$dataProvider->setSort([
 			'defaultOrder' => ['at' => SORT_DESC, 'id' => SORT_DESC],
 			'attributes' => [
@@ -66,11 +67,11 @@ class HistorySearch extends History {
 	}
 
 	/**
-	 * @param $query
+	 * @param ActiveQueryInterface $query
 	 * @return void
 	 * @throws Throwable
 	 */
-	private function filterData($query):void {
+	private function filterData(ActiveQueryInterface $query):void {
 		$query->andFilterWhere([self::tableName().'.id' => $this->id])
 			->andFilterWhere([self::tableName().'.user' => $this->user])
 			->andFilterWhere([self::tableName().'.delegate' => $this->delegate])
