@@ -72,7 +72,7 @@ use pozitronik\helpers\Utils;
 		],
 		[
 			'attribute' => 'model_key',
-			'value' => static fn(ActiveRecordHistory $model) => null === $model->model_key?$model->model_key:Html::a($model->model_key, [
+			'value' => static fn(ActiveRecordHistory $model) => null === $model->model_key?$model->model_key:Html::a((string)$model->model_key, [
 				'history', 'for' => $model->model_class, 'id' => $model->model_key
 			]),
 			'format' => 'raw'
