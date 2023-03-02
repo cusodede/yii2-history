@@ -302,14 +302,14 @@ final class ActiveRecordHistory extends History {
 
 	/**
 	 * Возвращает массив атрибутов, различающихся в заданных уровнях
-	 * @param $level1
-	 * @param $level2
+	 * @param int $level1
+	 * @param int $level2
 	 * @return array
 	 * @throws InvalidConfigException
 	 * @throws Throwable
 	 * @test me
 	 */
-	public function getAttributesDiff($level1, $level2):array {
+	public function getAttributesDiff(int $level1, int $level2):array {
 		return self::ArrayKeyValueDiffAssocRecursive($this->getModelHistory($level1), $this->getModelHistory($level2));
 	}
 
@@ -564,10 +564,10 @@ final class ActiveRecordHistory extends History {
 	}
 
 	/**
-	 * @param $value
+	 * @param mixed $value
 	 * @return string
 	 */
-	public function serialize($value):string {
+	public function serialize(mixed $value):string {
 		return (null === $this->serializer)?serialize($value):call_user_func($this->serializer[0], $value);
 	}
 
