@@ -20,7 +20,7 @@ use yii\queue\JobInterface;
 /**
  * This job stores enqueued history changes to DB tables
  */
-class HistoryJob implements JobInterface {
+final class HistoryJob implements JobInterface {
 	use DelegateTrait;
 
 	public ?string $at;
@@ -91,7 +91,7 @@ class HistoryJob implements JobInterface {
 	 * @throws Throwable
 	 */
 	public static function push(?ActiveRecord $model, array $oldAttributes, array $newAttributes, ?ActiveRecord $relationModel = null, ?Event $event = null, ?string $operation_identifier = null):self {
-		$historyJob = new static();
+		$historyJob = new self();
 		$historyJob->storeShortClassNames = ArrayHelper::getValue(ModuleHelper::params(HistoryModule::class), "storeShortClassNames", false);
 		$historyJob->at = date('Y-m-d H:i:s');//store the current date, not a writing date
 		$historyJob->user = Yii::$app?->user?->id;//Assuming, that the framework is configured with user identities
