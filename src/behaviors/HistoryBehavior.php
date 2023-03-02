@@ -6,13 +6,13 @@ namespace cusodede\history\behaviors;
 use cusodede\history\HistoryModule;
 use cusodede\history\jobs\HistoryJob;
 use cusodede\history\models\ActiveRecordHistory;
+use pozitronik\helpers\ArrayHelper;
 use Throwable;
 use yii\base\Behavior;
 use yii\base\Event;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
 use yii\db\AfterSaveEvent;
-use yii\helpers\ArrayHelper;
 
 /**
  * @property ActiveRecord $owner The owner of this behavior
