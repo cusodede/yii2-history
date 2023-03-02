@@ -36,6 +36,7 @@ class HistoryBehavior extends Behavior {
 	 *
 	 * @return array
 	 * @throws InvalidConfigException
+	 * @throws Throwable
 	 */
 	private function getModelData():array {
 		if (null !== $this->isRelation) {
