@@ -50,7 +50,7 @@ class HistoryEvent extends Model implements HistoryEventInterface {
 	 */
 	public function getTimelineEntry():TimelineEntry {
 		if (null === $this->actionsFormatter) {
-			$content = self::ActionsFormatterDefault($this->actions);//default formatter
+			$content = self::ActionsFormatterDefault($this->actions);//default formatter @phpstan-ignore-line
 		} elseif (is_string($this->actionsFormatter)) {
 			$content = $this->actionsFormatter;
 		} elseif (ReflectionHelper::is_closure($this->actionsFormatter)) {
@@ -86,6 +86,6 @@ class HistoryEvent extends Model implements HistoryEventInterface {
 	 * @throws Throwable
 	 */
 	public function getEventTypeName():?string {
-		return ArrayHelper::getValue(self::EVENT_TYPE_NAMES, $this->eventType);
+		return ArrayHelper::getValue(self::EVENT_TYPE_NAMES, $this->eventType);//@phpstan-ignore-line
 	}
 }

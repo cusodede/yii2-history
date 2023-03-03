@@ -52,7 +52,7 @@ class HistoryEventAction extends Model {
 	 * @throws Throwable
 	 */
 	public function getTypeName():?string {
-		return ArrayHelper::getValue(self::ATTRIBUTE_TYPE_NAMES, $this->type);
+		return ArrayHelper::getValue(self::ATTRIBUTE_TYPE_NAMES, $this->type);//@phpstan-ignore-line
 	}
 
 	/**
