@@ -44,7 +44,7 @@ class HistoryModule extends Module {
 		if (null === $queue = static::param('queue')) return null;
 		return is_string($queue)
 			?Yii::$app->$queue
-			:Yii::createObject($queue);
+			:Yii::createObject($queue);//@phpstan-ignore-line
 	}
 
 }
