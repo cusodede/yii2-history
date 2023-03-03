@@ -60,7 +60,7 @@ use pozitronik\helpers\Utils;
 		[
 			'class' => DataColumn::class,
 			'attribute' => 'model_class',
-			'value' => static fn(ActiveRecordHistory $model) => null === $model->model_key?$model->model_class:Html::a($model->model_class, [
+			'value' => static fn(ActiveRecordHistory $model) => null === $model->model_key?$model->model_class:Html::a((string)$model->model_class, [
 				'show', 'for' => $model->model_class, 'id' => $model->model_key
 			]),
 			'format' => 'raw',
