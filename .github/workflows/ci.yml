@@ -72,3 +72,10 @@ jobs:
         run: vendor/bin/codecept run
         env:
           COMPOSER_TOKEN: ${{ secrets.COMPOSER_GITHUB_TOKEN }}
+
+      - name: phpstan static analysis
+        uses: php-actions/phpstan@v3
+        with:
+            path: src/
+            configuration: src/phpstan.neon
+            memory_limit: 256M
