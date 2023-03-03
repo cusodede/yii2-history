@@ -9,8 +9,9 @@ parameters:
 		- vendor
 	reportUnmatchedIgnoredErrors: false
 	ignoreErrors:
-		- '#Property [a-zA-Z0-9\\_]+::\$[a-zA-Z0-9_]+ type has no value type specified in iterable type array.#' #conflicting with built-in inspection
-		- '#Method [a-zA-Z0-9\\_]+::[a-zA-Z0-9_]+\(\) return type has no value type specified in iterable type array.#' #conflicting with built-in inspection
-		- '#PHPDoc tag @var for variable \$[a-zA-Z0-9_]+ has no value type specified in iterable type array.#' #conflicting with built-in inspection
-		- '#Method [a-zA-Z0-9\\_]+::[a-zA-Z0-9_]+\(\) has parameter \$[a-zA-Z0-9_]+ with no value type specified in iterable type array.#' #conflicting with built-in inspection
-		- '#Cannot call method getOriginalUserId\(\) on class-string\|object.#'
+		- '#Property [a-zA-Z0-9\\_]+::\$\w+ type has no value type specified in iterable type array.#' #conflicting with built-in inspection
+		- '#Method [a-zA-Z0-9\\_]+::\w+\(\) return type has no value type specified in iterable type array.#' #conflicting with built-in inspection
+		- '#PHPDoc tag @var for variable \$\w+ has no value type specified in iterable type array.#' #conflicting with built-in inspection
+		- '#Method [a-zA-Z0-9\\_]+::\w+\(\) has parameter \$\w+ with no value type specified in iterable type array.#' #conflicting with built-in inspection
+		- '#Cannot call method getOriginalUserId\(\) on class-string\|object.#' #conflicting trait method
+		- '#Cannot access property \$\w+ on yii\\db\\ActiveRecord\|null#' #BaseActiveRecord properties in objects
