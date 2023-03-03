@@ -94,7 +94,7 @@ final class HistoryJob implements JobInterface {
 		$historyJob = new self();
 		$historyJob->storeShortClassNames = ArrayHelper::getValue(ModuleHelper::params(HistoryModule::class), "storeShortClassNames", false); //@phpstan-ignore-line
 		$historyJob->at = date('Y-m-d H:i:s');//store the current date, not a writing date
-		$historyJob->user = Yii::$app->user?->id;//Assuming, that the framework is configured with user identities
+		$historyJob->user = Yii::$app->user?->id;//Assuming, that the framework is configured with user identities @phpstan-ignore-line
 		$historyJob->model_class = null === $model?null:$historyJob->getStoredClassName($model);
 		$historyJob->model_key = is_numeric($model->primaryKey)?$model->primaryKey:null;//$pKey can be an array @phpstan-ignore-line
 		$historyJob->old_attributes = $oldAttributes;

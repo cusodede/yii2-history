@@ -26,7 +26,7 @@ class HistoryModule extends Module {
 	 */
 	public static function UserIdentityClass():string|ActiveRecordInterface {
 		if (null === self::$_userIdentityClass) {
-			$identity = static::param('userIdentityClass')??Yii::$app->user->identityClass;
+			$identity = static::param('userIdentityClass')??Yii::$app->user->identityClass;// @phpstan-ignore-line
 			self::$_userIdentityClass = (is_callable($identity))
 				?$identity()
 				:$identity;

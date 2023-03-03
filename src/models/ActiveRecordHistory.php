@@ -91,7 +91,7 @@ final class ActiveRecordHistory extends History {
 	public static function push(?ActiveRecord $model, array $oldAttributes, array $newAttributes, ?ActiveRecord $relationModel = null, ?Event $event = null, ?string $operation_identifier = null):bool {
 		$log = new self(['storeShortClassNames' => ArrayHelper::getValue(ModuleHelper::params(HistoryModule::class), "storeShortClassNames", false)]);
 		$log->setAttributes([
-			'user' => Yii::$app->hasProperty('user')?Yii::$app->user?->id:null,//Let's assume framework configured with user identity class
+			'user' => Yii::$app->hasProperty('user')?Yii::$app->user?->id:null,//Let's assume framework configured with user identity class @phpstan-ignore-line
 			'model_class' => null === $model?null:$log->getStoredClassName($model),
 			'model_key' => is_numeric($model->primaryKey)?$model->primaryKey:null,//$pKey может быть массивом
 			'old_attributes' => $log->serialize($oldAttributes),
@@ -215,7 +215,7 @@ final class ActiveRecordHistory extends History {
 		$result->eventTime = $this->at;
 		$result->objectName = $this->model_class;
 		$result->subject = $this->user;
-		$result->actions = $this->historyEventActions;
+		$result->actions = $this->historyEventActions;//@phpstan-ignore-line
 
 		$result->eventCaption = ArrayHelper::getValue(HistoryEventInterface::EVENT_TYPE_NAMES, $this->eventType);
 
@@ -595,7 +595,7 @@ final class ActiveRecordHistory extends History {
 	 * @return array
 	 */
 	public function getAttributesOld():array {
-		if (null === $this->_oldAttributes) $this->_oldAttributes = $this->unserialize($this->old_attributes);
+		if (null === $this->_oldAttributes) $this->_oldAttributes = $this->unserialize($this->old_attributes);//@phpstan-ignore-line
 		return $this->_oldAttributes;
 	}
 
@@ -611,7 +611,7 @@ final class ActiveRecordHistory extends History {
 	 * @return array
 	 */
 	public function getAttributesNew():array {
-		if (null === $this->_newAttributes) $this->_newAttributes = $this->unserialize($this->new_attributes);
+		if (null === $this->_newAttributes) $this->_newAttributes = $this->unserialize($this->new_attributes);//@phpstan-ignore-line
 		return $this->_newAttributes;
 	}
 

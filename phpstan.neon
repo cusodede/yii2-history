@@ -2,7 +2,8 @@ parameters:
 	level: 9
 	paths:
 		- src
-		- tests
+	excludePaths:
+		- */DelegateTrait.php
 	universalObjectCratesClasses:
 		- yii\base\Application
 		- yii\db\ActiveRecord
@@ -19,3 +20,5 @@ parameters:
 		- '#Parameter .\d \$\w+ of (\w)* method [a-zA-Z0-9\\_]+::\w+\(\) expects array\|object, .+ given.#' #Any classes are objects
 #		- '#Cannot call static method \w+\(\) on yii\\db\\ActiveRecord\|null.#'
 #		- '#Cannot call method \w+\(\) on yii\\db\\ActiveRecord\|null.#'
+		- '#Method .+\(\) should return .+ but returns mixed.#' #Which is ok, all boundaries should be catched in phpstorm static analysis
+		- '#Property cusodede\\history\\models\\HistoryEvent::\$eventCaption \(string\|null\) does not accept mixed.#' #Which is ok, all boundaries should be catched in phpstorm static analysis
