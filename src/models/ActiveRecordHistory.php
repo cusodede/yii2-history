@@ -73,7 +73,7 @@ final class ActiveRecordHistory extends History {
 	 */
 	public function getStoredClassName(?Model $model = null):string {
 		if (null === $model) $model = $this->loadedModel;
-		return $this->storeShortClassNames?$model->formName():get_class($model);// @phpstan-ignore-line - get class not returning false since 8.0
+		return $this->storeShortClassNames?$model->formName():get_class($model);// @phpstan-ignore-line - get_class() not returning false since 8.0
 	}
 
 	/**
