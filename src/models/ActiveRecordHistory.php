@@ -222,6 +222,7 @@ final class ActiveRecordHistory extends History {
 		$labelsConfig = $this->getModelRules("eventConfig.eventLabels");
 
 		if (ReflectionHelper::is_closure($labelsConfig)) {
+			/** @var callable $labelsConfig */
 			$result->eventCaption = $labelsConfig($result->eventType, $result->eventTypeName);
 		} elseif (is_array($labelsConfig)) {
 			$result->eventCaption = ArrayHelper::getValue($labelsConfig, $result->eventType, $result->eventTypeName);
@@ -288,6 +289,7 @@ final class ActiveRecordHistory extends History {
 		if (null === $attributeConfig = $this->getModelRules("attributes.{$attributeName}")) return $attributeValue;
 		if (false === $attributeConfig) return false;//не показывать атрибут
 		if (ReflectionHelper::is_closure($attributeConfig)) {
+			/** @var callable $attributeConfig */
 			return $attributeConfig($attributeName, $attributeValue);
 		}
 		if (is_array($attributeConfig)) {//[className => valueAttribute]
@@ -448,6 +450,7 @@ final class ActiveRecordHistory extends History {
 		if ($this->loadedModel->isNewRecord) throw new InvalidConfigException('Provided model must have a primary key');
 		$resultModelData = $this->loadedModel->attributes;
 		$relationAttributes = $this->getModelRules('relations', []);
+		/** @var array $relationAttributes */
 		foreach ($relationAttributes as $relationAttribute => $relationRule) {
 			if ((is_array($relationRule))) {
 				$resultModelData[$relationAttribute] = ArrayHelper::getColumn($this->loadedModel->$relationAttribute, array_shift($relationRule));
