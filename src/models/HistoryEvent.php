@@ -35,6 +35,9 @@ class HistoryEvent extends Model implements HistoryEventInterface {
 	public ?string $objectName = null;
 	public ?int $subject = null;
 	public mixed $actionsFormatter = null;
+	/**
+	 * @var HistoryEventAction[]|null
+	 */
 	public ?array $actions = null;
 	/* seems to be unused
 	public $subjectId;
