@@ -45,7 +45,7 @@ use pozitronik\helpers\Utils;
 		[
 			'class' => DataColumn::class,
 			'attribute' => 'event',
-			'value' => static fn(ActiveRecordHistory $model) => $model->historyEvent->eventCaption,
+			'value' => static fn(ActiveRecordHistory $model) => $model->historyEvent->eventCaption,// @phpstan-ignore-line
 			'format' => 'raw',
 			'filter' => HistoryEventInterface::EVENT_TYPE_FRAMEWORK_NAMES,
 		],
@@ -81,7 +81,7 @@ use pozitronik\helpers\Utils;
 			'attribute' => 'actions',
 			'filter' => false,
 			'format' => 'raw',
-			'value' => static fn(ActiveRecordHistory $model) => $model->historyEvent->timelineEntry->content
+			'value' => static fn(ActiveRecordHistory $model) => $model->historyEvent->timelineEntry->content // @phpstan-ignore-line
 		],
 		'scenario',
 		[

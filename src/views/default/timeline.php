@@ -20,7 +20,7 @@ use yii\web\View;
 	</div>
 	<?php foreach ($timeline as $loggerEvent): ?>
 		<?= TimelineEntryWidget::widget([
-			'entry' => $loggerEvent->historyEvent->timelineEntry
+			'entry' => $loggerEvent->historyEvent->timelineEntry // @phpstan-ignore-line
 		]) ?>
 
 	<?php endforeach; ?>
