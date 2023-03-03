@@ -77,5 +77,5 @@ jobs:
         uses: php-actions/phpstan@v3
         with:
             path: src/
-            configuration: src/phpstan.neon
+            configuration: phpstan.neon
             memory_limit: 256M
