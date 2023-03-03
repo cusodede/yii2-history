@@ -575,17 +575,20 @@ final class ActiveRecordHistory extends History {
 	}
 
 	/**
-	 * @param string|mixed $value
+	 * @param string|resource $value
 	 * @return array This function is supposed to deserialize only a set of model attributes
 	 */
 	protected function unserialize(mixed $value):array {
 		if (is_resource($value) && 'stream' === get_resource_type($value)) {
-			$serialized = stream_get_contents($value);
+			if (false === $serialized = stream_get_contents($value)) throw new Exception('Cannot unserialize stream contents');
 			fseek($value, 0);
 		} else {
+			/** @var string $serialized */
 			$serialized = $value;
 		}
-		return (null === $this->serializer)?unserialize($serialized, ['allowed_classes' => true]):call_user_func($this->serializer[1], $serialized);
+		return (null === $this->serializer)
+			?unserialize($serialized, ['allowed_classes' => true])
+			:call_user_func($this->serializer[1], $serialized);
 	}
 
 	/**
