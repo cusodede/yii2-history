@@ -45,7 +45,7 @@ use pozitronik\helpers\Utils;
 		[
 			'class' => DataColumn::class,
 			'attribute' => 'event',
-			'value' => static fn(ActiveRecordHistory $model) => $model->historyEvent->eventCaption,
+			'value' => static fn(ActiveRecordHistory $model) => $model->historyEvent->eventCaption,// @phpstan-ignore-line
 			'format' => 'raw',
 			'filter' => HistoryEventInterface::EVENT_TYPE_FRAMEWORK_NAMES,
 		],
@@ -60,7 +60,7 @@ use pozitronik\helpers\Utils;
 		[
 			'class' => DataColumn::class,
 			'attribute' => 'model_class',
-			'value' => static fn(ActiveRecordHistory $model) => null === $model->model_key?$model->model_class:Html::a($model->model_class, [
+			'value' => static fn(ActiveRecordHistory $model) => null === $model->model_key?$model->model_class:Html::a((string)$model->model_class, [
 				'show', 'for' => $model->model_class, 'id' => $model->model_key
 			]),
 			'format' => 'raw',
@@ -72,7 +72,7 @@ use pozitronik\helpers\Utils;
 		],
 		[
 			'attribute' => 'model_key',
-			'value' => static fn(ActiveRecordHistory $model) => null === $model->model_key?$model->model_key:Html::a($model->model_key, [
+			'value' => static fn(ActiveRecordHistory $model) => null === $model->model_key?$model->model_key:Html::a((string)$model->model_key, [
 				'history', 'for' => $model->model_class, 'id' => $model->model_key
 			]),
 			'format' => 'raw'
@@ -81,7 +81,7 @@ use pozitronik\helpers\Utils;
 			'attribute' => 'actions',
 			'filter' => false,
 			'format' => 'raw',
-			'value' => static fn(ActiveRecordHistory $model) => $model->historyEvent->timelineEntry->content
+			'value' => static fn(ActiveRecordHistory $model) => $model->historyEvent->timelineEntry->content // @phpstan-ignore-line
 		],
 		'scenario',
 		[
@@ -95,4 +95,3 @@ use pozitronik\helpers\Utils;
 		]
 	]
 ]) ?>
-

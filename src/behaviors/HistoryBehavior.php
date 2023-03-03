@@ -6,13 +6,13 @@ namespace cusodede\history\behaviors;
 use cusodede\history\HistoryModule;
 use cusodede\history\jobs\HistoryJob;
 use cusodede\history\models\ActiveRecordHistory;
+use pozitronik\helpers\ArrayHelper;
 use Throwable;
 use yii\base\Behavior;
 use yii\base\Event;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
 use yii\db\AfterSaveEvent;
-use yii\helpers\ArrayHelper;
 
 /**
  * @property ActiveRecord $owner The owner of this behavior
@@ -28,13 +28,15 @@ use yii\helpers\ArrayHelper;
 class HistoryBehavior extends Behavior {
 
 	public array $relations = [];
-	public ?array $isRelation = null;
+	/** @var null|array|callable  */
+	public mixed $isRelation = null;
 	public mixed $afterUpdate = null;//php 8.0 has no callable type
 
 	/**
 	 *
 	 * @return array
 	 * @throws InvalidConfigException
+	 * @throws Throwable
 	 */
 	private function getModelData():array {
 		if (null !== $this->isRelation) {
@@ -60,7 +62,7 @@ class HistoryBehavior extends Behavior {
 			ActiveRecord::EVENT_AFTER_INSERT => function(Event $event) {
 				/** @var ActiveRecord $model */
 				[$model, $attributes, $relation] = $this->getModelData();
-				static::push($model, [], $attributes, $relation, $event);
+				self::push($model, [], $attributes, $relation, $event);
 			},
 			ActiveRecord::EVENT_AFTER_UPDATE => function(AfterSaveEvent $event) {
 				if (is_callable($this->afterUpdate)) {//полностью переопределяем метод. Введено, как хак сохранения плохо тупо сделанных периодов. Нужно либо перепроектировать периоды, либо придумать логичную схему для правил
@@ -73,12 +75,12 @@ class HistoryBehavior extends Behavior {
 				foreach ($event->changedAttributes as $key => $value) {
 					$newAttributes[$key] = $model->$key;
 				}
-				if ([] !== $newAttributes) static::push($model, $event->changedAttributes, $newAttributes, $relation, $event);
+				if ([] !== $newAttributes) self::push($model, $event->changedAttributes, $newAttributes, $relation, $event);
 			},
 			ActiveRecord::EVENT_AFTER_DELETE => function(Event $event) {
 				/** @var ActiveRecord $model */
 				[$model, $attributes, $relation] = $this->getModelData();
-				static::push($model, $attributes, [], $relation, $event);
+				self::push($model, $attributes, [], $relation, $event);
 			}
 		];
 	}

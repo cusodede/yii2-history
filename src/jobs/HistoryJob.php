@@ -20,7 +20,7 @@ use yii\queue\JobInterface;
 /**
  * This job stores enqueued history changes to DB tables
  */
-class HistoryJob implements JobInterface {
+final class HistoryJob implements JobInterface {
 	use DelegateTrait;
 
 	public ?string $at;
@@ -91,12 +91,12 @@ class HistoryJob implements JobInterface {
 	 * @throws Throwable
 	 */
 	public static function push(?ActiveRecord $model, array $oldAttributes, array $newAttributes, ?ActiveRecord $relationModel = null, ?Event $event = null, ?string $operation_identifier = null):self {
-		$historyJob = new static();
-		$historyJob->storeShortClassNames = ArrayHelper::getValue(ModuleHelper::params(HistoryModule::class), "storeShortClassNames", false);
+		$historyJob = new self();
+		$historyJob->storeShortClassNames = ArrayHelper::getValue(ModuleHelper::params(HistoryModule::class), "storeShortClassNames", false); //@phpstan-ignore-line
 		$historyJob->at = date('Y-m-d H:i:s');//store the current date, not a writing date
-		$historyJob->user = Yii::$app?->user?->id;//Assuming, that the framework is configured with user identities
+		$historyJob->user = Yii::$app->user?->id;//Assuming, that the framework is configured with user identities @phpstan-ignore-line
 		$historyJob->model_class = null === $model?null:$historyJob->getStoredClassName($model);
-		$historyJob->model_key = is_numeric($model->primaryKey)?$model->primaryKey:null;//$pKey can be an array
+		$historyJob->model_key = is_numeric($model->primaryKey)?$model->primaryKey:null;//$pKey can be an array @phpstan-ignore-line
 		$historyJob->old_attributes = $oldAttributes;
 		$historyJob->new_attributes = $newAttributes;
 		$historyJob->relation_model = null === $relationModel?null:$historyJob->getStoredClassName($relationModel);

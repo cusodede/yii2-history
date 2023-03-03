@@ -1,0 +1,24 @@
+parameters:
+	level: 9
+	paths:
+		- src
+	excludePaths:
+		- */DelegateTrait.php
+	universalObjectCratesClasses:
+		- yii\base\Application
+		- yii\db\ActiveRecord
+	scanDirectories:
+		- vendor
+	reportUnmatchedIgnoredErrors: false
+	ignoreErrors:
+		- '#Property [a-zA-Z0-9\\_]+::\$\w+ type has no value type specified in iterable type array.#' #conflicting with built-in inspection
+		- '#Method [a-zA-Z0-9\\_]+::\w+\(\) return type has no value type specified in iterable type array.#' #conflicting with built-in inspection
+		- '#PHPDoc tag @var for variable \$\w+ has no value type specified in iterable type array.#' #conflicting with built-in inspection
+		- '#Method [a-zA-Z0-9\\_]+::\w+\(\) has parameter \$\w+ with no value type specified in iterable type array.#' #conflicting with built-in inspection
+		- '#Cannot call method getOriginalUserId\(\) on class-string\|object.#' #conflicting trait method
+		- '#Cannot access property \$\w+ on yii\\db\\ActiveRecord\|null#' #BaseActiveRecord properties in objects
+		- '#Parameter .\d \$\w+ of (\w)* method [a-zA-Z0-9\\_]+::\w+\(\) expects array\|object, .+ given.#' #Any classes are objects
+#		- '#Cannot call static method \w+\(\) on yii\\db\\ActiveRecord\|null.#'
+#		- '#Cannot call method \w+\(\) on yii\\db\\ActiveRecord\|null.#'
+		- '#Method .+\(\) should return .+ but returns mixed.#' #Which is ok, all boundaries should be catched in phpstorm static analysis
+		- '#Property cusodede\\history\\models\\HistoryEvent::\$eventCaption \(string\|null\) does not accept mixed.#' #Which is ok, all boundaries should be catched in phpstorm static analysis

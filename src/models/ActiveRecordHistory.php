@@ -40,7 +40,7 @@ use yii\db\ActiveRecord;
  *
  * @property bool $storeShortClassNames Сохранять короткие/полные имена классов. Если параметр задан в конфиге модуля, то загрузится из конфига
  */
-class ActiveRecordHistory extends History {
+final class ActiveRecordHistory extends History {
 	use DelegateTrait;
 
 	/**
@@ -73,7 +73,7 @@ class ActiveRecordHistory extends History {
 	 */
 	public function getStoredClassName(?Model $model = null):string {
 		if (null === $model) $model = $this->loadedModel;
-		return $this->storeShortClassNames?$model->formName():get_class($model);
+		return $this->storeShortClassNames?$model->formName():get_class($model);// @phpstan-ignore-line - get_class() not returning false since 8.0
 	}
 
 	/**
@@ -91,7 +91,7 @@ class ActiveRecordHistory extends History {
 	public static function push(?ActiveRecord $model, array $oldAttributes, array $newAttributes, ?ActiveRecord $relationModel = null, ?Event $event = null, ?string $operation_identifier = null):bool {
 		$log = new self(['storeShortClassNames' => ArrayHelper::getValue(ModuleHelper::params(HistoryModule::class), "storeShortClassNames", false)]);
 		$log->setAttributes([
-			'user' => Yii::$app->hasProperty('user')?Yii::$app->user?->id:null,//Let's assume framework configured with user identity class
+			'user' => Yii::$app->hasProperty('user')?Yii::$app->user?->id:null,//Let's assume framework configured with user identity class @phpstan-ignore-line
 			'model_class' => null === $model?null:$log->getStoredClassName($model),
 			'model_key' => is_numeric($model->primaryKey)?$model->primaryKey:null,//$pKey может быть массивом
 			'old_attributes' => $log->serialize($oldAttributes),
@@ -116,7 +116,7 @@ class ActiveRecordHistory extends History {
 	 * @throws Throwable
 	 */
 	public static function addTag(ActiveRecord $model, string $tag = HistoryTags::TAG_CREATED, ?string $operation_identifier = null):bool {
-		$log = new static(['storeShortClassNames' => ArrayHelper::getValue(ModuleHelper::params(HistoryModule::class), "storeShortClassNames", false)]);
+		$log = new self(['storeShortClassNames' => ArrayHelper::getValue(ModuleHelper::params(HistoryModule::class), "storeShortClassNames", false)]);
 		if (null === $taggedRecord = self::find()->where([
 				'model_class' => $log->getStoredClassName($model),
 				'model_key' => is_numeric($model->primaryKey)?$model->primaryKey:null//$pKey может быть массивом
@@ -146,7 +146,7 @@ class ActiveRecordHistory extends History {
 	 * @noinspection PhpIncompatibleReturnTypeInspection - мы можем конкретизировать тип
 	 */
 	public function getLoadedModel():?ActiveRecord {
-		return $this->_loadedModel??ReflectionHelper::LoadClassByName(self::ExpandClassName($this->model_class), null, false);
+		return $this->_loadedModel??ReflectionHelper::LoadClassByName(self::ExpandClassName($this->model_class), null, false); // @phpstan-ignore-line
 	}
 
 	/**
@@ -163,7 +163,7 @@ class ActiveRecordHistory extends History {
 	 * @throws Throwable
 	 */
 	private function getModelRules(?string $key = null, mixed $default = null) {
-		$behaviors = $this?->loadedModel?->behaviors()??[];
+		$behaviors = $this->loadedModel?->behaviors()??[];
 		$keys = ArrayHelper::array_find_deep($behaviors, HistoryBehavior::class);
 		array_pop($keys);
 		if (null !== $key) $keys[] = $key;
@@ -177,7 +177,7 @@ class ActiveRecordHistory extends History {
 	 */
 	public function getEventType():int {
 		if (null !== $eventsConfig = $this->getModelRules("events")) {
-			/** @var array $eventRule */
+			/** @var array[] $eventsConfig */
 			foreach ($eventsConfig as $eventType => $eventRule) {
 				foreach ($eventRule as $attribute => $condition) {
 					if (is_array($condition)) {
@@ -215,13 +215,14 @@ class ActiveRecordHistory extends History {
 		$result->eventTime = $this->at;
 		$result->objectName = $this->model_class;
 		$result->subject = $this->user;
-		$result->actions = $this->historyEventActions;
+		$result->actions = $this->historyEventActions;//@phpstan-ignore-line
 
 		$result->eventCaption = ArrayHelper::getValue(HistoryEventInterface::EVENT_TYPE_NAMES, $this->eventType);
 
 		$labelsConfig = $this->getModelRules("eventConfig.eventLabels");
 
 		if (ReflectionHelper::is_closure($labelsConfig)) {
+			/** @var callable $labelsConfig */
 			$result->eventCaption = $labelsConfig($result->eventType, $result->eventTypeName);
 		} elseif (is_array($labelsConfig)) {
 			$result->eventCaption = ArrayHelper::getValue($labelsConfig, $result->eventType, $result->eventTypeName);
@@ -288,6 +289,7 @@ class ActiveRecordHistory extends History {
 		if (null === $attributeConfig = $this->getModelRules("attributes.{$attributeName}")) return $attributeValue;
 		if (false === $attributeConfig) return false;//не показывать атрибут
 		if (ReflectionHelper::is_closure($attributeConfig)) {
+			/** @var callable $attributeConfig */
 			return $attributeConfig($attributeName, $attributeValue);
 		}
 		if (is_array($attributeConfig)) {//[className => valueAttribute]
@@ -302,14 +304,14 @@ class ActiveRecordHistory extends History {
 
 	/**
 	 * Возвращает массив атрибутов, различающихся в заданных уровнях
-	 * @param $level1
-	 * @param $level2
+	 * @param int $level1
+	 * @param int $level2
 	 * @return array
 	 * @throws InvalidConfigException
 	 * @throws Throwable
 	 * @test me
 	 */
-	public function getAttributesDiff($level1, $level2):array {
+	public function getAttributesDiff(int $level1, int $level2):array {
 		return self::ArrayKeyValueDiffAssocRecursive($this->getModelHistory($level1), $this->getModelHistory($level2));
 	}
 
@@ -320,17 +322,17 @@ class ActiveRecordHistory extends History {
 	 * @return array
 	 */
 	public static function ArrayKeyValueDiffAssocRecursive(array $array1, array $array2):array {
-		$intersection = array_uintersect_assoc($array1, $array2, static function($value1, $value2) {
+		$intersection = array_uintersect_assoc($array1, $array2, static function($value1, $value2):int {
 			if (is_scalar($value1) && is_scalar($value2)) {
-				return (string)$value1 === (string)$value2;//Внимание! при возврате bool, учитываем, что (bool)true == (int)1
+				return (string)$value1 === (string)$value2?1:0;
 			}
 			if (is_array($value1) && is_array($value2)) {
-				return $value1 === $value2;
+				return $value1 === $value2?1:0;
 			}
 			if ((is_array($value1) && is_scalar($value2)) || (is_array($value2) && is_scalar($value1))) {
-				return false;
+				return 0;
 			}
-			return true;//null;
+			return 1;//null;
 		});//получили разницу в существующих везде атрибутах
 
 		$separate_keys = array_diff_key($array1, $array2);
@@ -346,15 +348,15 @@ class ActiveRecordHistory extends History {
 	 */
 	private function getHistoryLevelRecord(int $level):?self {
 		if ($level < 1) return null;
-		return self::find()
-			->where(['operation_identifier' => self::find()
-				->select(['operation_identifier'])
-				->where(['model_class' => $this->getStoredClassName(), 'model_key' => $this->loadedModel->primaryKey])
-				->groupBy(['operation_identifier'])
-				->orderBy([/*'at' => SORT_DESC, */ 'MAX(id)' => SORT_DESC])
-				->offset($level - 1)
-				->limit(1)
-				->all()])
+		return self::find() // @phpstan-ignore-line
+		->where(['operation_identifier' => self::find()
+			->select(['operation_identifier'])
+			->where(['model_class' => $this->getStoredClassName(), 'model_key' => $this->loadedModel->primaryKey])
+			->groupBy(['operation_identifier'])
+			->orderBy([/*'at' => SORT_DESC, */ 'MAX(id)' => SORT_DESC])
+			->offset($level - 1)
+			->limit(1)
+			->all()])
 			->one();
 	}
 
@@ -414,8 +416,8 @@ class ActiveRecordHistory extends History {
 	 * @throws InvalidConfigException
 	 */
 	private function getStepHistory(string $step_identifier):array {
-		return self::find()
-			->where(['operation_identifier' => $step_identifier, 'model_class' => $this->getStoredClassName(), 'model_key' => $this->loadedModel->primaryKey])
+		return self::find() // @phpstan-ignore-line
+		->where(['operation_identifier' => $step_identifier, 'model_class' => $this->getStoredClassName(), 'model_key' => $this->loadedModel->primaryKey])
 			->orderBy(['at' => SORT_DESC, 'id' => SORT_DESC])
 			->all();
 	}
@@ -427,7 +429,7 @@ class ActiveRecordHistory extends History {
 	 * @throws Throwable
 	 */
 	private function getModelHistoryStepsIdentifiers():array {
-		return ArrayHelper::keymap(static::find()
+		return ArrayHelper::keymap(self::find()
 			->select(['operation_identifier'])
 			->where(['model_class' => $this->getStoredClassName(), 'model_key' => $this->loadedModel->primaryKey])
 			->groupBy(['operation_identifier'])
@@ -448,6 +450,7 @@ class ActiveRecordHistory extends History {
 		if ($this->loadedModel->isNewRecord) throw new InvalidConfigException('Provided model must have a primary key');
 		$resultModelData = $this->loadedModel->attributes;
 		$relationAttributes = $this->getModelRules('relations', []);
+		/** @var array $relationAttributes */
 		foreach ($relationAttributes as $relationAttribute => $relationRule) {
 			if ((is_array($relationRule))) {
 				$resultModelData[$relationAttribute] = ArrayHelper::getColumn($this->loadedModel->$relationAttribute, array_shift($relationRule));
@@ -457,7 +460,7 @@ class ActiveRecordHistory extends History {
 				$resultModelData[$relationAttribute] = ArrayHelper::getValue($this->loadedModel->$relationAttribute, $relationRule);
 			}
 		}
-		unset($resultModelData[(string)ArrayHelper::getValue($this->loadedModel::primaryKey(), 0, 'id')]);//сбрасываем ключ, чтобы не срабатывали геттеры при построении моделей
+		unset($resultModelData[(string)ArrayHelper::getValue($this->loadedModel::primaryKey(), 0, 'id')]);//сбрасываем ключ, чтобы не срабатывали геттеры при построении моделей @phpstan-ignore-line
 
 		$modelHistoryStepsIdentifiers = $this->getModelHistoryStepsIdentifiers();
 		for ($currentHistoryLevel = 0; $currentHistoryLevel < $historyLevel; $currentHistoryLevel++) {
@@ -473,7 +476,7 @@ class ActiveRecordHistory extends History {
 					} elseif (is_array($currentVal)) {
 						$resultModelData[$attributeName] = array_diff((array)ArrayHelper::getValue($resultModelData, $attributeName, []), is_array($attributeValue)?$attributeValue:(array)$attributeValue);//обойдёмся без рекурсивности
 					} else {
-						throw new UnknownPropertyException("Не могу разобрать конфигурацию атрибута истории: {$attributeName} для {$this->loadedModel->formName()}");
+						throw new UnknownPropertyException("Не могу разобрать конфигурацию атрибута истории: {$attributeName} для {$this->loadedModel->formName()}");//@phpstan-ignore-line
 					}
 				}
 
@@ -564,32 +567,37 @@ class ActiveRecordHistory extends History {
 	}
 
 	/**
-	 * @param $value
+	 * @param mixed $value
 	 * @return string
 	 */
-	public function serialize($value):string {
+	public function serialize(mixed $value):string {
 		return (null === $this->serializer)?serialize($value):call_user_func($this->serializer[0], $value);
 	}
 
 	/**
-	 * @param string|mixed $value
+	 * @param string|resource $value
 	 * @return array This function is supposed to deserialize only a set of model attributes
+	 * @throws Exception
 	 */
 	protected function unserialize(mixed $value):array {
 		if (is_resource($value) && 'stream' === get_resource_type($value)) {
-			$serialized = stream_get_contents($value);
+			if (false === $serialized = stream_get_contents($value)) throw new Exception('Cannot unserialize stream contents');
 			fseek($value, 0);
 		} else {
+			/** @var string $serialized */
 			$serialized = $value;
 		}
-		return (null === $this->serializer)?unserialize($serialized, ['allowed_classes' => true]):call_user_func($this->serializer[1], $serialized);
+		return (null === $this->serializer)
+			?unserialize($serialized, ['allowed_classes' => true])
+			:call_user_func($this->serializer[1], $serialized);
 	}
 
 	/**
 	 * @return array
+	 * @throws Exception
 	 */
 	public function getAttributesOld():array {
-		if (null === $this->_oldAttributes) $this->_oldAttributes = $this->unserialize($this->old_attributes);
+		if (null === $this->_oldAttributes) $this->_oldAttributes = $this->unserialize($this->old_attributes);//@phpstan-ignore-line
 		return $this->_oldAttributes;
 	}
 
@@ -603,9 +611,10 @@ class ActiveRecordHistory extends History {
 
 	/**
 	 * @return array
+	 * @throws Exception
 	 */
 	public function getAttributesNew():array {
-		if (null === $this->_newAttributes) $this->_newAttributes = $this->unserialize($this->new_attributes);
+		if (null === $this->_newAttributes) $this->_newAttributes = $this->unserialize($this->new_attributes);//@phpstan-ignore-line
 		return $this->_newAttributes;
 	}
 
