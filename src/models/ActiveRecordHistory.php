@@ -457,7 +457,7 @@ final class ActiveRecordHistory extends History {
 				$resultModelData[$relationAttribute] = ArrayHelper::getValue($this->loadedModel->$relationAttribute, $relationRule);
 			}
 		}
-		unset($resultModelData[(string)ArrayHelper::getValue($this->loadedModel::primaryKey(), 0, 'id')]);//сбрасываем ключ, чтобы не срабатывали геттеры при построении моделей
+		unset($resultModelData[(string)ArrayHelper::getValue($this->loadedModel::primaryKey(), 0, 'id')]);//сбрасываем ключ, чтобы не срабатывали геттеры при построении моделей @phpstan-ignore-line
 
 		$modelHistoryStepsIdentifiers = $this->getModelHistoryStepsIdentifiers();
 		for ($currentHistoryLevel = 0; $currentHistoryLevel < $historyLevel; $currentHistoryLevel++) {
@@ -473,7 +473,7 @@ final class ActiveRecordHistory extends History {
 					} elseif (is_array($currentVal)) {
 						$resultModelData[$attributeName] = array_diff((array)ArrayHelper::getValue($resultModelData, $attributeName, []), is_array($attributeValue)?$attributeValue:(array)$attributeValue);//обойдёмся без рекурсивности
 					} else {
-						throw new UnknownPropertyException("Не могу разобрать конфигурацию атрибута истории: {$attributeName} для {$this->loadedModel->formName()}");
+						throw new UnknownPropertyException("Не могу разобрать конфигурацию атрибута истории: {$attributeName} для {$this->loadedModel->formName()}");//@phpstan-ignore-line
 					}
 				}
 
