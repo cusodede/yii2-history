@@ -577,6 +577,7 @@ final class ActiveRecordHistory extends History {
 	/**
 	 * @param string|resource $value
 	 * @return array This function is supposed to deserialize only a set of model attributes
+	 * @throws Exception
 	 */
 	protected function unserialize(mixed $value):array {
 		if (is_resource($value) && 'stream' === get_resource_type($value)) {
@@ -593,6 +594,7 @@ final class ActiveRecordHistory extends History {
 
 	/**
 	 * @return array
+	 * @throws Exception
 	 */
 	public function getAttributesOld():array {
 		if (null === $this->_oldAttributes) $this->_oldAttributes = $this->unserialize($this->old_attributes);//@phpstan-ignore-line
@@ -609,6 +611,7 @@ final class ActiveRecordHistory extends History {
 
 	/**
 	 * @return array
+	 * @throws Exception
 	 */
 	public function getAttributesNew():array {
 		if (null === $this->_newAttributes) $this->_newAttributes = $this->unserialize($this->new_attributes);//@phpstan-ignore-line
