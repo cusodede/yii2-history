@@ -177,7 +177,7 @@ final class ActiveRecordHistory extends History {
 	 */
 	public function getEventType():int {
 		if (null !== $eventsConfig = $this->getModelRules("events")) {
-			/** @var array $eventRule */
+			/** @var array[] $eventsConfig */
 			foreach ($eventsConfig as $eventType => $eventRule) {
 				foreach ($eventRule as $attribute => $condition) {
 					if (is_array($condition)) {
